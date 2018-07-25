@@ -295,6 +295,16 @@ extra-deps:
 - servant-swagger-ui-0.3.0.3.13.2
 - servant-swagger-ui-redoc-0.3.0.1.21.2
 
+# LTS-12 comes with 0.14 against which we can't compile (yet)
+- servant-0.13.0.1
+- servant-client-0.13.0.1
+- servant-client-core-0.13.0.1
+- servant-generic-0.1.0.2
+- servant-server-0.13.0.1
+
+# LTS-12 doesn't have purescript, we do however build it in CI.
+- purescript-0.12.0
+
 # This is for CI to pass --fast to all dependencies
 apply-ghc-options: everything
 
