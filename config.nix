@@ -87,7 +87,7 @@ spaces:
               # enableExecutableProfiling = false;
               doHaddock = false;
               doHoogle = false;
-              doCheck = false;
+              doCheck = true; #false;
               configureFlags = (drv.configureFlags or []) ++ [ spaces ];
             });
           };
