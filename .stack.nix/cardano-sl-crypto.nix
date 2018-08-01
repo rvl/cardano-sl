@@ -31,6 +31,7 @@
           (hsPkgs.base)
           (hsPkgs.binary)
           (hsPkgs.bytestring)
+          (hsPkgs.canonical-json)
           (hsPkgs.cardano-crypto)
           (hsPkgs.cardano-sl-binary)
           (hsPkgs.cardano-sl-util)

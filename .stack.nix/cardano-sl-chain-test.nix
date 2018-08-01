@@ -11,45 +11,43 @@
     package = {
       specVersion = "1.10";
       identifier = {
-        name = "cardano-sl-infra-test";
+        name = "cardano-sl-chain-test";
         version = "1.3.0";
       };
       license = "MIT";
       copyright = "2018 IOHK";
-      maintainer = "IOHK <support@iohk.io>";
-      author = "IOHK";
+      maintainer = "rupert.horlick@iohk.io";
+      author = "Rupert Horlick";
       homepage = "";
       url = "";
-      synopsis = "Cardano SL - generators for cardano-sl-infra";
-      description = "This package contains generators for the infrastructural data types used in Cardano SL.";
+      synopsis = "Cardano SL - arbitrary instances for cardano-sl-chain";
+      description = "Cardano SL - arbitrary instances for cardano-sl-chain";
       buildType = "Simple";
     };
     components = {
-      "cardano-sl-infra-test" = {
+      "cardano-sl-chain-test" = {
         depends  = [
-          (hsPkgs.QuickCheck)
-          (hsPkgs.async)
           (hsPkgs.base)
           (hsPkgs.bytestring)
+          (hsPkgs.cardano-crypto)
           (hsPkgs.cardano-sl-binary)
-          (hsPkgs.cardano-sl-binary-test)
           (hsPkgs.cardano-sl-chain)
-          (hsPkgs.cardano-sl-chain-test)
           (hsPkgs.cardano-sl-core)
           (hsPkgs.cardano-sl-core-test)
           (hsPkgs.cardano-sl-crypto)
           (hsPkgs.cardano-sl-crypto-test)
-          (hsPkgs.cardano-sl-infra)
           (hsPkgs.cardano-sl-util-test)
-          (hsPkgs.containers)
+          (hsPkgs.formatting)
           (hsPkgs.generic-arbitrary)
           (hsPkgs.hedgehog)
-          (hsPkgs.hspec)
-          (hsPkgs.kademlia)
+          (hsPkgs.QuickCheck)
+          (hsPkgs.random)
+          (hsPkgs.reflection)
           (hsPkgs.universum)
+          (hsPkgs.unordered-containers)
         ];
       };
     };
   } // rec {
-    src = ../infra/test;
+    src = ../chain/test;
   }

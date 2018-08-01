@@ -30,6 +30,7 @@
           (hsPkgs.base)
           (hsPkgs.binary)
           (hsPkgs.bytestring)
+          (hsPkgs.canonical-json)
           (hsPkgs.cardano-sl-util)
           (hsPkgs.cborg)
           (hsPkgs.cereal)

@@ -5,15 +5,13 @@
 , hsPkgs
 , pkgconfPkgs }:
   let
-    _flags = {
-      asserts = true;
-    } // flags;
+    _flags = {} // flags;
   in {
     flags = _flags;
     package = {
       specVersion = "1.10";
       identifier = {
-        name = "cardano-sl-core";
+        name = "cardano-sl-chain";
         version = "1.3.0";
       };
       license = "MIT";
@@ -22,70 +20,56 @@
       author = "Serokell";
       homepage = "";
       url = "";
-      synopsis = "Cardano SL - core";
-      description = "Cardano SL - core";
+      synopsis = "Cardano SL - transaction processing";
+      description = "Cardano SL - transaction processing";
       buildType = "Simple";
     };
     components = {
-      "cardano-sl-core" = {
+      "cardano-sl-chain" = {
         depends  = [
+          (hsPkgs.Cabal)
           (hsPkgs.aeson)
           (hsPkgs.aeson-options)
-          (hsPkgs.ansi-terminal)
-          (hsPkgs.async)
+          (hsPkgs.array)
           (hsPkgs.base)
-          (hsPkgs.base58-bytestring)
           (hsPkgs.bytestring)
-          (hsPkgs.Cabal)
-          (hsPkgs.canonical-json)
-          (hsPkgs.cardano-report-server)
           (hsPkgs.cardano-sl-binary)
+          (hsPkgs.cardano-sl-core)
           (hsPkgs.cardano-sl-crypto)
           (hsPkgs.cardano-sl-util)
-          (hsPkgs.cborg)
-          (hsPkgs.cereal)
+          (hsPkgs.conduit)
           (hsPkgs.containers)
           (hsPkgs.cryptonite)
           (hsPkgs.data-default)
           (hsPkgs.deepseq)
-          (hsPkgs.deriving-compat)
           (hsPkgs.ekg-core)
           (hsPkgs.ether)
           (hsPkgs.exceptions)
-          (hsPkgs.extra)
-          (hsPkgs.filepath)
           (hsPkgs.fmt)
           (hsPkgs.formatting)
+          (hsPkgs.free)
           (hsPkgs.hashable)
           (hsPkgs.lens)
           (hsPkgs.log-warper)
-          (hsPkgs.parsec)
+          (hsPkgs.lrucache)
           (hsPkgs.memory)
-          (hsPkgs.mmorph)
-          (hsPkgs.monad-control)
           (hsPkgs.mtl)
+          (hsPkgs.mmorph)
+          (hsPkgs.mono-traversable)
+          (hsPkgs.neat-interpolation)
+          (hsPkgs.parsec)
           (hsPkgs.plutus-prototype)
-          (hsPkgs.random)
-          (hsPkgs.reflection)
-          (hsPkgs.resourcet)
-          (hsPkgs.safecopy)
           (hsPkgs.safe-exceptions)
           (hsPkgs.serokell-util)
-          (hsPkgs.servant)
-          (hsPkgs.stm)
+          (hsPkgs.reflection)
           (hsPkgs.template-haskell)
           (hsPkgs.text)
-          (hsPkgs.th-lift-instances)
           (hsPkgs.time)
           (hsPkgs.time-units)
+          (hsPkgs.formatting)
           (hsPkgs.transformers)
-          (hsPkgs.transformers-base)
-          (hsPkgs.transformers-lift)
           (hsPkgs.universum)
-          (hsPkgs.unliftio)
-          (hsPkgs.unliftio-core)
           (hsPkgs.unordered-containers)
-          (hsPkgs.vector)
         ];
         build-tools = [
           (hsPkgs.buildPackages.cpphs)
@@ -94,42 +78,59 @@
       tests = {
         "test" = {
           depends  = [
-            (hsPkgs.aeson)
             (hsPkgs.base)
-            (hsPkgs.base16-bytestring)
             (hsPkgs.bytestring)
             (hsPkgs.cardano-crypto)
             (hsPkgs.cardano-sl-binary)
             (hsPkgs.cardano-sl-binary-test)
             (hsPkgs.cardano-sl-core)
+            (hsPkgs.cardano-sl-core-test)
             (hsPkgs.cardano-sl-crypto)
             (hsPkgs.cardano-sl-crypto-test)
+            (hsPkgs.cardano-sl-chain)
             (hsPkgs.cardano-sl-util)
             (hsPkgs.cardano-sl-util-test)
             (hsPkgs.containers)
-            (hsPkgs.cryptonite)
-            (hsPkgs.deepseq)
-            (hsPkgs.ed25519)
+            (hsPkgs.fmt)
             (hsPkgs.formatting)
             (hsPkgs.generic-arbitrary)
             (hsPkgs.hedgehog)
             (hsPkgs.hspec)
-            (hsPkgs.hedgehog)
-            (hsPkgs.pvss)
+            (hsPkgs.lens)
+            (hsPkgs.mtl)
             (hsPkgs.QuickCheck)
-            (hsPkgs.quickcheck-instances)
             (hsPkgs.random)
             (hsPkgs.serokell-util)
-            (hsPkgs.text)
-            (hsPkgs.time-units)
+            (hsPkgs.formatting)
             (hsPkgs.universum)
             (hsPkgs.unordered-containers)
             (hsPkgs.vector)
           ];
-          build-tools = [
-            (hsPkgs.buildPackages.cpphs)
+        };
+      };
+      benchmarks = {
+        "block-bench" = {
+          depends  = [
+            (hsPkgs.QuickCheck)
+            (hsPkgs.base)
+            (hsPkgs.bytestring)
+            (hsPkgs.criterion)
+            (hsPkgs.cardano-sl-binary)
+            (hsPkgs.cardano-sl-chain)
+            (hsPkgs.cardano-sl-crypto)
+            (hsPkgs.cardano-sl-core)
+            (hsPkgs.cardano-sl-core-test)
+            (hsPkgs.cardano-sl-crypto-test)
+            (hsPkgs.cardano-sl-util-test)
+            (hsPkgs.deepseq)
+            (hsPkgs.formatting)
+            (hsPkgs.generic-arbitrary)
+            (hsPkgs.random)
+            (hsPkgs.text)
+            (hsPkgs.universum)
+            (hsPkgs.unordered-containers)
           ];
         };
       };
     };
-  } // rec { src = ../core; }
+  } // rec { src = ../chain; }

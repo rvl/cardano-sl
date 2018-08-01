@@ -11,7 +11,7 @@
     package = {
       specVersion = "1.10";
       identifier = {
-        name = "cardano-sl-infra-test";
+        name = "cardano-sl-db-test";
         version = "1.3.0";
       };
       license = "MIT";
@@ -20,36 +20,27 @@
       author = "IOHK";
       homepage = "";
       url = "";
-      synopsis = "Cardano SL - generators for cardano-sl-infra";
-      description = "This package contains generators for the infrastructural data types used in Cardano SL.";
+      synopsis = "Cardano SL - arbitrary instances for cardano-sl-db";
+      description = "Cardano SL - arbitrary instances for cardano-sl-db";
       buildType = "Simple";
     };
     components = {
-      "cardano-sl-infra-test" = {
+      "cardano-sl-db-test" = {
         depends  = [
           (hsPkgs.QuickCheck)
-          (hsPkgs.async)
           (hsPkgs.base)
-          (hsPkgs.bytestring)
           (hsPkgs.cardano-sl-binary)
-          (hsPkgs.cardano-sl-binary-test)
           (hsPkgs.cardano-sl-chain)
           (hsPkgs.cardano-sl-chain-test)
           (hsPkgs.cardano-sl-core)
           (hsPkgs.cardano-sl-core-test)
-          (hsPkgs.cardano-sl-crypto)
           (hsPkgs.cardano-sl-crypto-test)
-          (hsPkgs.cardano-sl-infra)
+          (hsPkgs.cardano-sl-db)
           (hsPkgs.cardano-sl-util-test)
-          (hsPkgs.containers)
           (hsPkgs.generic-arbitrary)
-          (hsPkgs.hedgehog)
-          (hsPkgs.hspec)
-          (hsPkgs.kademlia)
           (hsPkgs.universum)
+          (hsPkgs.unordered-containers)
         ];
       };
     };
-  } // rec {
-    src = ../infra/test;
-  }
+  } // rec { src = ../db/test; }

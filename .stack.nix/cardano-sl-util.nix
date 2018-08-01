@@ -29,6 +29,7 @@
         depends  = [
           (hsPkgs.aeson)
           (hsPkgs.base)
+          (hsPkgs.canonical-json)
           (hsPkgs.cborg)
           (hsPkgs.cereal)
           (hsPkgs.containers)

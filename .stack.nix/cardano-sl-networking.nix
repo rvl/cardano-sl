@@ -30,9 +30,11 @@
       "cardano-sl-networking" = {
         depends  = [
           (hsPkgs.aeson)
+          (hsPkgs.aeson-options)
           (hsPkgs.async)
           (hsPkgs.attoparsec)
           (hsPkgs.base)
+          (hsPkgs.cardano-sl-chain)
           (hsPkgs.cardano-sl-core)
           (hsPkgs.cardano-sl-util)
           (hsPkgs.containers)
@@ -57,6 +59,7 @@
           (hsPkgs.safe-exceptions)
           (hsPkgs.stm)
           (hsPkgs.text)
+          (hsPkgs.these)
           (hsPkgs.formatting)
           (hsPkgs.time)
           (hsPkgs.time-units)
