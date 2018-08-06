@@ -69,9 +69,12 @@ let
             math-functions = dontCheck super.math-functions;
             HTF = dontCheck super.HTF;
 
-            rocksdb-haskell-ng = dontCheck super.rocksdb-haskell-ng;
             # case sensitivity issue?
+            rocksdb-haskell-ng = dontCheck super.rocksdb-haskell-ng;
             megaparsec = dontCheck super.megaparsec;
+            
+            # Cabal is lacking Semigroup-Monoid-Proposal support in the tests/HackageTests.hs
+            Cabal = dontCheck super.Cabal;
             
             # These are missing `doctest`
             network = dontCheck super.network;
