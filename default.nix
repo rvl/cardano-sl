@@ -213,7 +213,6 @@ let
           cardano-sl-infra      = doTemplateHaskell super.cardano-sl-infra;
           cardano-sl-txp        = doTemplateHaskell super.cardano-sl-txp;
           cardano-sl-update     = doTemplateHaskell super.cardano-sl-update;
-          cardano-sl-ssc        = doTemplateHaskell super.cardano-sl-ssc;
           cardano-sl            = doTemplateHaskell super.cardano-sl;
       
           fclabels              = doTemplateHaskell super.fclabels;
@@ -234,6 +233,7 @@ let
           cardano-sl-tools      = doTemplateHaskell super.cardano-sl-tools;
           hedgehog              = doTemplateHaskell super.hedgehog;
           th-abstraction        = doTemplateHaskell super.th-abstraction;
+          th-expand-syns        = doTemplateHaskell super.th-expand-syns;
           file-embed            = doTemplateHaskell super.file-embed;
           QuickCheck            = doTemplateHaskell super.QuickCheck;
       
