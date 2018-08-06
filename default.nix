@@ -211,7 +211,6 @@ let
           
           cardano-sl-db         = doTemplateHaskell super.cardano-sl-db;
           cardano-sl-infra      = doTemplateHaskell super.cardano-sl-infra;
-          cardano-sl-txp        = doTemplateHaskell super.cardano-sl-txp;
           cardano-sl-update     = doTemplateHaskell super.cardano-sl-update;
           cardano-sl            = doTemplateHaskell super.cardano-sl;
       
