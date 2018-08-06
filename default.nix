@@ -75,6 +75,9 @@ let
             
             # Cabal is lacking Semigroup-Monoid-Proposal support in the tests/HackageTests.hs
             Cabal = dontCheck super.Cabal;
+
+            # requires phantomJS
+            wai-cors = dontCheck super.wai-cors;
             
             # These are missing `doctest`
             network = dontCheck super.network;
@@ -103,6 +106,7 @@ let
             trifecta = dontCheck super.trifecta;
             swagger2 = dontCheck super.swagger2;
             servant-swagger = dontCheck super.servant-swagger;
+            aeson-diff = dontCheck super.aeson-diff;
 
           }; }; };
 in

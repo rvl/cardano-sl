@@ -47,6 +47,7 @@
       "servant-generic" = hsPkgs.servant-generic."0.1.0.2";
       "servant-server" = hsPkgs.servant-server."0.13.0.1";
       "o-clock" = hsPkgs.o-clock."0.1.1";
+      "beam-sqlite" = hsPkgs.beam-sqlite."0.3.2.2";
     };
   packages = hsPkgs:
     {
