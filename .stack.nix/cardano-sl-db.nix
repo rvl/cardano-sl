@@ -51,7 +51,6 @@
           (hsPkgs.memory)
           (hsPkgs.mmorph)
           (hsPkgs.mtl)
-          (hsPkgs.pipes)
           (hsPkgs.reflection)
           (hsPkgs.resourcet)
           (hsPkgs.rocksdb-haskell-ng)

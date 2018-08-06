@@ -99,7 +99,6 @@
       stylish-haskell = ./.stack.nix/stylish-haskell.nix;
       universum = ./.stack.nix/universum.nix;
       serokell-util = ./.stack.nix/serokell-util.nix;
-      purescript = ./.stack.nix/purescript.nix;
       hfsevents = ./.stack.nix/hfsevents.nix;
     };
 }

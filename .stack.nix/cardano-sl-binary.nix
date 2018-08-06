@@ -27,6 +27,7 @@
     components = {
       "cardano-sl-binary" = {
         depends  = [
+          (hsPkgs.aeson)
           (hsPkgs.base)
           (hsPkgs.binary)
           (hsPkgs.bytestring)
