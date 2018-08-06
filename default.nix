@@ -53,7 +53,7 @@ let
             scientific = dontCheck super.scientific;
             statistics = dontCheck super.statistics;
             dlist = dontCheck super.dlist;
-            hspec = super.hspec.override { hsPkgs = { stringbuilder = dontCheck self.stringbuilder; }; };
+            hspec = dontCheck (super.hspec.override { hsPkgs = { stringbuilder = dontCheck self.stringbuilder; }; });
             # missing: bytestring-handle, hashable-time
             aeson = dontCheck super.aeson;
             mwc-random = dontCheck super.mwc-random;
@@ -67,7 +67,6 @@ let
             mockery = dontCheck super.mockery;
             DRBG = dontCheck super.DRBG;
             math-functions = dontCheck super.math-functions;
-            HTF = dontCheck super.HTF;
 
             # case sensitivity issue?
             rocksdb-haskell-ng = dontCheck super.rocksdb-haskell-ng;
@@ -116,6 +115,36 @@ let
             servant-swagger = dontCheck super.servant-swagger;
             aeson-diff = dontCheck super.aeson-diff;
 
+            # this will fail with doTemplateHaskell.
+            # due to some object-file reloading issue
+            # in iserv.
+            vector = dontCheck super.vector;
+            
+            hspec-discover        = dontCheck super.hspec-discover;
+            hspec-core            = dontCheck super.hspec-core;
+            # most of these fail due to depending on hspec-discover
+            # at test-build time.          
+            base-orphans          = dontCheck super.base-orphans;
+            safe-exceptions       = dontCheck super.safe-exceptions;
+            wai                   = dontCheck super.wai;
+            constraints           = dontCheck super.constraints;
+            unliftio              = dontCheck super.unliftio;
+            streaming-commons     = dontCheck super.streaming-commons;
+            th-abstraction        = dontCheck super.th-abstraction;
+            base-compat-batteries = addBuildTools super.base-compat-batteries [ self.buildPackages.hspec-discover ];
+            word8                 = addBuildTools super.word8                 [ self.buildPackages.hspec-discover ];
+            fast-logger           = addBuildTools super.fast-logger           [ self.buildPackages.hspec-discover ];
+            logging-facade        = addBuildTools super.logging-facade        [ self.buildPackages.hspec-discover ];
+            newtype-generics      = addBuildTools super.newtype-generics      [ self.buildPackages.hspec-discover ];
+            string-conversions    = addBuildTools super.string-conversions    [ self.buildPackages.hspec-discover ];
+            bifunctors            = addBuildTools super.bifunctors            [ self.buildPackages.hspec-discover ];
+            deriving-compat       = addBuildTools super.deriving-compat       [ self.buildPackages.hspec-discover ];
+            generic-deriving      = addBuildTools super.generic-deriving      [ self.buildPackages.hspec-discover ];
+            invariant             = addBuildTools super.invariant             [ self.buildPackages.hspec-discover ];
+            adjunctions           = addBuildTools super.adjunctions           [ self.buildPackages.hspec-discover ];
+            th-utilities          = addBuildTools super.th-utilities          [ self.buildPackages.hspec-discover ];
+            HTF                   = addBuildTools (dontCheck super.HTF)       [ self.buildPackages.cpphs          ];
+          
             stm-delay = dontCheck super.stm-delay; # https://hydra.iohk.io/build/193506/nixlog/14
             hspec-expectations-pretty-diff = dontCheck super.hspec-expectations-pretty-diff; # https://hydra.iohk.io/build/193533/nixlog/1
           }; }; };
@@ -191,7 +220,7 @@ let
           file-embed-lzma       = appendPatchMingw super.file-embed-lzma    ./file-embed-lzma-0.patch;
           
           ether                 = doTemplateHaskell super.ether;
-          generics-sop          = doTemplateHaskell super.generics-sop;
+          generics-sop          = doTemplateHaskell (dontCheck super.generics-sop);
           th-lift-instances     = doTemplateHaskell super.th-lift-instances;
           math-functions        = doTemplateHaskell super.math-functions;
           wreq                  = doTemplateHaskell super.wreq;
@@ -236,8 +265,26 @@ let
           th-abstraction        = doTemplateHaskell super.th-abstraction;
           th-expand-syns        = doTemplateHaskell super.th-expand-syns;
           file-embed            = doTemplateHaskell super.file-embed;
-          QuickCheck            = doTemplateHaskell super.QuickCheck;
-      
+          QuickCheck            = doTemplateHaskell (dontCheck super.QuickCheck);
+          optparse-applicative  = doTemplateHaskell super.optparse-applicative;
+          quickcheck-text       = doTemplateHaskell super.quickcheck-text;
+          
+          th-reify-many         = doTemplateHaskell super.th-reify-many;
+          vector                = doTemplateHaskell super.vector;
+          tasty-th              = doTemplateHaskell super.tasty-th;
+          lifted-async          = doTemplateHaskell super.lifted-async;
+          vector-th-unbox       = doTemplateHaskell super.vector-th-unbox;
+
+          th-lift               = doTemplateHaskell super.th-lift;
+          microlens-th          = doTemplateHaskell super.microlens-th;
+          micro-recursion-schemes = doTemplateHaskell super.micro-recursion-schemes;
+          bifunctors            = doTemplateHaskell super.bifunctors;
+          deriving-compat       = doTemplateHaskell super.deriving-compat;
+          generic-deriving      = doTemplateHaskell super.generic-deriving;
+          uri-bytestring        = doTemplateHaskell super.uri-bytestring;
+          invariant             = doTemplateHaskell super.invariant;
+          th-utilities          = doTemplateHaskell super.th-utilities;
+
           cassava               = super.cassava.override            { flags = { bytestring--lt-0_10_4 = false; }; };
           time-locale-compat    = super.time-locale-compat.override { flags = { old-locale = false; }; };
       
