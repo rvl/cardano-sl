@@ -73,8 +73,16 @@ let
             rocksdb-haskell-ng = dontCheck super.rocksdb-haskell-ng;
             megaparsec = dontCheck super.megaparsec;
             
-            # Cabal is lacking Semigroup-Monoid-Proposal support in the tests/HackageTests.hs
-            Cabal = dontCheck super.Cabal;
+            Cabal = appendPatches super.Cabal
+              [ # allow a script/application be specified that wraps the test executable that's run.
+                ./Cabal2201-allow-test-wrapper.patch
+                # Cabal is lacking Semigroup-Monoid-Proposal support in the tests/HackageTests.hs
+                ./Cabal2201-SMP-test-fix.patch
+                # as we push a lot of arguments to the `Setup` we might need @file support.
+                ./Cabal2201-response-file-support.patch
+                # > hackage-tests: /homeless-shelter/.cabal/config: openBinaryFile: does not exist (No such file or directory)
+                ./Cabal2201-no-hackage-tests.patch
+              ];
 
             # requires phantomJS
             wai-cors = dontCheck super.wai-cors;
@@ -109,7 +117,7 @@ let
             aeson-diff = dontCheck super.aeson-diff;
 
             stm-delay = dontCheck super.stm-delay; # https://hydra.iohk.io/build/193506/nixlog/14
-
+            hspec-expectations-pretty-diff = dontCheck super.hspec-expectations-pretty-diff; # https://hydra.iohk.io/build/193533/nixlog/1
           }; }; };
 in
 { system ? builtins.currentSystem
@@ -208,7 +216,6 @@ let
           cardano-sl-delegation = doTemplateHaskell super.cardano-sl-delegation;
           cardano-sl-update     = doTemplateHaskell super.cardano-sl-update;
           cardano-sl-ssc        = doTemplateHaskell super.cardano-sl-ssc;
-          cardano-sl-block      = doTemplateHaskell super.cardano-sl-block;
           cardano-sl            = doTemplateHaskell super.cardano-sl;
       
           fclabels              = doTemplateHaskell super.fclabels;
