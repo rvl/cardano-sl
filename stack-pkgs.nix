@@ -46,6 +46,7 @@
       "servant-client-core" = hsPkgs.servant-client-core."0.13.0.1";
       "servant-generic" = hsPkgs.servant-generic."0.1.0.2";
       "servant-server" = hsPkgs.servant-server."0.13.0.1";
+      "o-clock" = hsPkgs.o-clock."0.1.1";
     };
   packages = hsPkgs:
     {
