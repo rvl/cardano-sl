@@ -108,6 +108,8 @@ let
             servant-swagger = dontCheck super.servant-swagger;
             aeson-diff = dontCheck super.aeson-diff;
 
+            stm-delay = dontCheck super.stm-delay; # https://hydra.iohk.io/build/193506/nixlog/14
+
           }; }; };
 in
 { system ? builtins.currentSystem
@@ -226,6 +228,7 @@ let
           trifecta              = doTemplateHaskell super.trifecta;
           cardano-sl-tools      = doTemplateHaskell super.cardano-sl-tools;
           hedgehog              = doTemplateHaskell super.hedgehog;
+          th-abstraction        = doTemplateHaskell super.th-abstraction;
       
           cassava               = super.cassava.override            { flags = { bytestring--lt-0_10_4 = false; }; };
           time-locale-compat    = super.time-locale-compat.override { flags = { old-locale = false; }; };
