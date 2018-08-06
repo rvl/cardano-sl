@@ -68,6 +68,11 @@ let
             DRBG = dontCheck super.DRBG;
             math-functions = dontCheck super.math-functions;
             HTF = dontCheck super.HTF;
+
+            rocksdb-haskell-ng = dontCheck super.rocksdb-haskell-ng;
+            # case sensitivity issue?
+            megaparsec = dontCheck super.megaparsec;
+            
             # These are missing `doctest`
             network = dontCheck super.network;
             distributive = dontCheck super.distributive;
@@ -95,6 +100,7 @@ let
             trifecta = dontCheck super.trifecta;
             swagger2 = dontCheck super.swagger2;
             servant-swagger = dontCheck super.servant-swagger;
+
           }; }; };
 in
 { system ? builtins.currentSystem
