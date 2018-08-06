@@ -5,6 +5,7 @@
       "async" = hsPkgs.async."2.2.1";
       "lifted-async" = hsPkgs.lifted-async."0.10.0.1";
       "fmt" = hsPkgs.fmt."0.6";
+      "ether" = hsPkgs.ether."0.5.1.0";
       "pvss" = hsPkgs.pvss."0.2.0";
       "systemd" = hsPkgs.systemd."1.1.2";
       "base58-bytestring" = hsPkgs.base58-bytestring."0.1.0";
@@ -15,7 +16,6 @@
       "lens-sop" = hsPkgs.lens-sop."0.2.0.2";
       "lzma-clib" = hsPkgs.lzma-clib."5.2.2";
       "micro-recursion-schemes" = hsPkgs.micro-recursion-schemes."5.0.2.2";
-      "directory" = hsPkgs.directory."1.3.1.1";
       "happy" = hsPkgs.happy."1.19.5";
       "criterion" = hsPkgs.criterion."1.4.0.0";
       "formatting" = hsPkgs.formatting."6.3.6";
@@ -37,7 +37,6 @@
       "normaldistribution" = hsPkgs.normaldistribution."1.1.0.3";
       "aeson-options" = hsPkgs.aeson-options."0.0.0";
       "tasty-hedgehog" = hsPkgs.tasty-hedgehog."0.2.0.0";
-      "ether" = hsPkgs.ether."0.5.1.0";
       "file-embed-lzma" = hsPkgs.file-embed-lzma."0";
       "servant-swagger-ui-core" = hsPkgs.servant-swagger-ui-core."0.3.1";
       "servant-swagger-ui" = hsPkgs.servant-swagger-ui."0.3.0.3.13.2";
