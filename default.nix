@@ -213,7 +213,6 @@ let
           cardano-sl-lrc        = doTemplateHaskell super.cardano-sl-lrc;
           cardano-sl-infra      = doTemplateHaskell super.cardano-sl-infra;
           cardano-sl-txp        = doTemplateHaskell super.cardano-sl-txp;
-          cardano-sl-delegation = doTemplateHaskell super.cardano-sl-delegation;
           cardano-sl-update     = doTemplateHaskell super.cardano-sl-update;
           cardano-sl-ssc        = doTemplateHaskell super.cardano-sl-ssc;
           cardano-sl            = doTemplateHaskell super.cardano-sl;
@@ -236,6 +235,7 @@ let
           cardano-sl-tools      = doTemplateHaskell super.cardano-sl-tools;
           hedgehog              = doTemplateHaskell super.hedgehog;
           th-abstraction        = doTemplateHaskell super.th-abstraction;
+          file-embed            = doTemplateHaskell super.file-embed;
       
           cassava               = super.cassava.override            { flags = { bytestring--lt-0_10_4 = false; }; };
           time-locale-compat    = super.time-locale-compat.override { flags = { old-locale = false; }; };
