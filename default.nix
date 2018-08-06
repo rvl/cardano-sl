@@ -208,10 +208,13 @@ let
           cardano-sl-networking = doTemplateHaskell super.cardano-sl-networking;
           cardano-sl-core       = doTemplateHaskell super.cardano-sl-core;
           cardano-sl-core-test  = doTemplateHaskell super.cardano-sl-core-test;
+
+          cardano-sl-chain      = doTemplateHaskell super.cardano-sl-chain;
+          cardano-sl-chain-test = doTemplateHaskell super.cardano-sl-chain-test;
           
           cardano-sl-db         = doTemplateHaskell super.cardano-sl-db;
+          cardano-sl-db-test    = doTemplateHaskell super.cardano-sl-db-test;          
           cardano-sl-infra      = doTemplateHaskell super.cardano-sl-infra;
-          cardano-sl-update     = doTemplateHaskell super.cardano-sl-update;
           cardano-sl            = doTemplateHaskell super.cardano-sl;
       
           fclabels              = doTemplateHaskell super.fclabels;
