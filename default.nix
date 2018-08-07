@@ -124,13 +124,14 @@ let
             hspec-core            = dontCheck super.hspec-core;
             # most of these fail due to depending on hspec-discover
             # at test-build time.          
-            base-orphans          = dontCheck super.base-orphans;
-            safe-exceptions       = dontCheck super.safe-exceptions;
-            wai                   = dontCheck super.wai;
-            constraints           = dontCheck super.constraints;
-            unliftio              = dontCheck super.unliftio;
-            streaming-commons     = dontCheck super.streaming-commons;
-            th-abstraction        = dontCheck super.th-abstraction;
+            base-orphans          = addBuildTools super.base-orphans          [ self.buildPackages.hspec-discover ];
+            safe-exceptions       = addBuildTools super.safe-exceptions       [ self.buildPackages.hspec-discover ];
+            wai                   = addBuildTools super.wai                   [ self.buildPackages.hspec-discover ];
+            constraints           = addBuildTools super.constraints           [ self.buildPackages.hspec-discover ];
+            unliftio              = addBuildTools super.unliftio              [ self.buildPackages.hspec-discover ];
+            streaming-commons     = addBuildTools super.streaming-commons     [ self.buildPackages.hspec-discover ];
+            # this one hits a bug in iserv! See https://ghc.haskell.org/trac/ghc/ticket/15481
+            th-abstraction        = addBuildTools (dontCheck super.th-abstraction) [ self.buildPackages.hspec-discover ];
             base-compat-batteries = addBuildTools super.base-compat-batteries [ self.buildPackages.hspec-discover ];
             word8                 = addBuildTools super.word8                 [ self.buildPackages.hspec-discover ];
             fast-logger           = addBuildTools super.fast-logger           [ self.buildPackages.hspec-discover ];
@@ -144,9 +145,30 @@ let
             adjunctions           = addBuildTools super.adjunctions           [ self.buildPackages.hspec-discover ];
             th-utilities          = addBuildTools super.th-utilities          [ self.buildPackages.hspec-discover ];
             HTF                   = addBuildTools (dontCheck super.HTF)       [ self.buildPackages.cpphs          ];
+            servant-client-core   = addBuildTools super.servant-client-core   [ self.buildPackages.hspec-discover ];
+            serokell-util         = addBuildTools super.serokell-util         [ self.buildPackages.hspec-discover ];
+            wai-extra             = addBuildTools super.wai-extra             [ self.buildPackages.hspec-discover ];
+            neat-interpolation    = addBuildTools super.neat-interpolation    [ self.buildPackages.HTF            ];
+            conduit-extra         = addBuildTools super.conduit-extra         [ self.buildPackages.hspec-discover ];
+            yaml                  = addBuildTools super.yaml                  [ self.buildPackages.hspec-discover ];
+            log-warper            = addBuildTools super.log-warper            [ self.buildPackages.hspec-discover ];
+            cardano-report-server = addBuildTools super.cardano-report-server [ self.buildPackages.hspec-discover ];
+            servant-client        = addBuildTools super.servant-client        [ self.buildPackages.hspec-discover ];
+            cardano-sl-util       = addBuildTools super.cardano-sl-util       [ self.buildPackages.hspec-discover ];
+            cardano-sl-binary     = addBuildTools super.cardano-sl-binary     [ self.buildPackages.hspec-discover ];
+            cardano-sl-crypto     = addBuildTools super.cardano-sl-crypto     [ self.buildPackages.hspec-discover ];
+            cardano-sl-core       = addBuildTools super.cardano-sl-core       [ self.buildPackages.hspec-discover ];
+            cardano-sl-chain      = addBuildTools super.cardano-sl-chain      [ self.buildPackages.hspec-discover ];
+            cardano-sl-networking = addBuildTools super.cardano-sl-networking [ self.buildPackages.hspec-discover ];
+            # can't check cardano-sl due to an iserv bug
+            cardano-sl            = addBuildTools (dontCheck super.cardano-sl) [ self.buildPackages.hspec-discover ];
+
+            # test/sample/bar\baz: openBinaryFile: does not exist (No such file or directory)
+            file-embed = dontCheck super.file-embed;
           
             stm-delay = dontCheck super.stm-delay; # https://hydra.iohk.io/build/193506/nixlog/14
             hspec-expectations-pretty-diff = dontCheck super.hspec-expectations-pretty-diff; # https://hydra.iohk.io/build/193533/nixlog/1
+            simple-sendfile       = dontCheck super.simple-sendfile; # the test depends on `unix` and thus fails to test on windows.
           }; }; };
 in
 { system ? builtins.currentSystem
@@ -258,6 +280,7 @@ let
           cardano-sl-wallet-new = doTemplateHaskell super.cardano-sl-wallet-new;
           cardano-sl-infra-test = doTemplateHaskell super.cardano-sl-infra-test;
           cardano-sl-explorer   = doTemplateHaskell super.cardano-sl-explorer;
+          cardano-sl-binary     = doTemplateHaskell super.cardano-sl-binary;
       
           trifecta              = doTemplateHaskell super.trifecta;
           cardano-sl-tools      = doTemplateHaskell super.cardano-sl-tools;
@@ -284,6 +307,10 @@ let
           uri-bytestring        = doTemplateHaskell super.uri-bytestring;
           invariant             = doTemplateHaskell super.invariant;
           th-utilities          = doTemplateHaskell super.th-utilities;
+          HTF                   = doTemplateHaskell super.HTF;
+          safecopy              = doTemplateHaskell super.safecopy;
+          yaml                  = doTemplateHaskell super.yaml;
+          neat-interpolation    = doTemplateHaskell super.neat-interpolation;
 
           cassava               = super.cassava.override            { flags = { bytestring--lt-0_10_4 = false; }; };
           time-locale-compat    = super.time-locale-compat.override { flags = { old-locale = false; }; };

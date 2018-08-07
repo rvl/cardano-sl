@@ -48,4 +48,10 @@ let buildHaskellPackages = pkgs.buildPackages.haskellPackages; in rec
       if hostPlatform.isWindows
       then appendPatch pkg p
       else pkg;
+
+  dontCheckMingw = pkg:
+    with pkg.stdenv;
+      if hostPlatform.isWindows
+      then dontCheck pkg
+      else pkg;
 }
