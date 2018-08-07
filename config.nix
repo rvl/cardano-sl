@@ -67,6 +67,10 @@ spaces:
             ./dll-loader-8.4.2.patch
             ./outputtable-assert-8.4.2.patch
             ./0001-Stop-the-linker-panic.patch
+            ./ghc-8.4.3-Cabal2201-SMP-test-fix.patch
+            ./ghc-8.4.3-Cabal2201-no-hackage-tests.patch
+            ./ghc-8.4.3-Cabal2201-allow-test-wrapper.patch
+            ./ghc-8.4.3-Cabal2201-response-file-support.patch
           ];
           postPatch = (drv.postPath or "") + ''
           autoreconf
@@ -89,6 +93,7 @@ spaces:
               doHoogle = false;
               doCheck = true; #false;
               configureFlags = (drv.configureFlags or []) ++ [ spaces ];
+              testTarget = if ps.stdenv.targetPlatform == ps.stdenv.hostPlatform then "" else "--test-wrapper false";
             });
           };
         });
