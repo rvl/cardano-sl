@@ -76,7 +76,12 @@ spaces:
           autoreconf
           ''; 
         });
-        packages.ghc843 = (ps.haskell.packages.ghc843.override {
+        packages.ghc843 = let testWrapper = ps.writeScriptBin "test-wrapper" ''
+        #!${ps.stdenv.shell}
+        set -x
+        ls -lah $0*
+        exec $@
+        ''; in (ps.haskell.packages.ghc843.override {
           overrides = self: super: rec {
             mkDerivation = drv: super.mkDerivation (drv // {
               # # fast builds -- the logic is as follows:
@@ -93,7 +98,7 @@ spaces:
               doHoogle = false;
               doCheck = true; #false;
               configureFlags = (drv.configureFlags or []) ++ [ spaces ];
-              testTarget = if ps.stdenv.targetPlatform == ps.stdenv.hostPlatform then "" else "--test-wrapper false";
+              testTarget = if ps.stdenv.targetPlatform == ps.stdenv.hostPlatform then "" else "--test-wrapper ${testWrapper}/bin/test-wrapper";
             });
           };
         });

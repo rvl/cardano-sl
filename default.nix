@@ -114,6 +114,7 @@ let
             swagger2 = dontCheck super.swagger2;
             servant-swagger = dontCheck super.servant-swagger;
             aeson-diff = dontCheck super.aeson-diff;
+            loc = dontCheck super.loc;
 
             # this will fail with doTemplateHaskell.
             # due to some object-file reloading issue
@@ -162,6 +163,7 @@ let
             cardano-sl-networking = addBuildTools super.cardano-sl-networking [ self.buildPackages.hspec-discover ];
             # can't check cardano-sl due to an iserv bug
             cardano-sl            = addBuildTools (dontCheck super.cardano-sl) [ self.buildPackages.hspec-discover ];
+            fclabels              = dontCheck super.fclabels;
 
             # test/sample/bar\baz: openBinaryFile: does not exist (No such file or directory)
             file-embed = dontCheck super.file-embed;
