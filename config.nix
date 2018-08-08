@@ -79,8 +79,11 @@ spaces:
         packages.ghc843 = let testWrapper = ps.writeScriptBin "test-wrapper" ''
         #!${ps.stdenv.shell}
         set -x
+        echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         ls -lah $0*
+        false
         exec $@
+        echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
         ''; in (ps.haskell.packages.ghc843.override {
           overrides = self: super: rec {
             mkDerivation = drv: super.mkDerivation (drv // {
@@ -98,7 +101,19 @@ spaces:
               doHoogle = false;
               doCheck = true; #false;
               configureFlags = (drv.configureFlags or []) ++ [ spaces ];
-              testTarget = if ps.stdenv.targetPlatform == ps.stdenv.hostPlatform then "" else "--test-wrapper ${testWrapper}/bin/test-wrapper";
+              preCheck = ''
+              set -x
+              echo "================================================================================"
+              echo "RUNNING TESTS"
+              echo "================================================================================"
+              '';
+              postCheck = ''
+              echo "================================================================================"
+              echo "END RUNNING TESTS"
+              echo "================================================================================"
+              set +x
+              '';
+              testTarget =  "--test-wrapper ${testWrapper}/bin/test-wrapper";
             });
           };
         });
