@@ -241,7 +241,7 @@ let
       
           x509-system           = appendPatchMingw super.x509-system        ./x509-system-1.6.6.patch;#) (drv: { postPatch = ":"; });
           conduit               = appendPatchMingw super.conduit            ./conduit-1.3.0.2.patch;
-          file-embed-lzma       = appendPatchMingw super.file-embed-lzma    ./file-embed-lzma-0.patch;
+          file-embed-lzma       = doTemplateHaskell (appendPatchMingw super.file-embed-lzma    ./file-embed-lzma-0.patch);
           
           ether                 = doTemplateHaskell super.ether;
           generics-sop          = doTemplateHaskell (dontCheck super.generics-sop);
@@ -313,6 +313,7 @@ let
           safecopy              = doTemplateHaskell super.safecopy;
           yaml                  = doTemplateHaskell super.yaml;
           neat-interpolation    = doTemplateHaskell super.neat-interpolation;
+          monad-par             = doTemplateHaskell super.monad-par;
 
           cassava               = super.cassava.override            { flags = { bytestring--lt-0_10_4 = false; }; };
           time-locale-compat    = super.time-locale-compat.override { flags = { old-locale = false; }; };
