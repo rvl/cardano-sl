@@ -49,6 +49,7 @@
       "o-clock" = hsPkgs.o-clock."0.1.1";
       "beam-sqlite" = hsPkgs.beam-sqlite."0.3.2.2";
       "quickcheck-classes" = hsPkgs.quickcheck-classes."0.4.14.1";
+      "semirings" = hsPkgs.semirings."0.2.0.1";
     };
   packages = hsPkgs:
     {

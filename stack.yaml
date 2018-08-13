@@ -312,6 +312,7 @@ extra-deps:
 
 # for `ip`.
 - quickcheck-classes-0.4.14.1
+- semirings-0.2.0.1
 
 # This is for CI to pass --fast to all dependencies
 apply-ghc-options: everything
