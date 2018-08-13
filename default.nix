@@ -161,6 +161,7 @@ let
             cardano-sl-core       = addBuildTools super.cardano-sl-core       [ self.buildPackages.hspec-discover ];
             cardano-sl-chain      = addBuildTools super.cardano-sl-chain      [ self.buildPackages.hspec-discover ];
             cardano-sl-networking = addBuildTools super.cardano-sl-networking [ self.buildPackages.hspec-discover ];
+            cardano-sl-client     = addBuildTools super.cardano-sl-client     [ self.buildPackages.hspec-discover ];
             servant-docs          = addBuildTools super.servant-docs          [ self.buildPackages.hspec-discover ];
             # can't check cardano-sl due to an iserv bug
             cardano-sl            = addBuildTools (dontCheck super.cardano-sl) [ self.buildPackages.hspec-discover ];
