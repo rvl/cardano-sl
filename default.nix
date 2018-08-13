@@ -166,6 +166,7 @@ let
             cardano-sl-generator  = addBuildTools super.cardano-sl-generator  [ self.buildPackages.hspec-discover ];
             cardano-sl-wallet     = addBuildTools super.cardano-sl-wallet     [ self.buildPackages.hspec-discover ];
             cardano-sl-auxx       = addBuildTools super.cardano-sl-auxx       [ self.buildPackages.hspec-discover ];
+            cardano-sl-explorer   = addBuildTools super.cardano-sl-explorer   [ self.buildPackages.hspec-discover ];
             servant-docs          = addBuildTools super.servant-docs          [ self.buildPackages.hspec-discover ];
             servant-quickcheck    = addBuildTools super.servant-quickcheck    [ self.buildPackages.hspec-discover ];
             # can't check cardano-sl due to an iserv bug
