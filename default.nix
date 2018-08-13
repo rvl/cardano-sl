@@ -115,6 +115,7 @@ let
             servant-swagger = dontCheck super.servant-swagger;
             aeson-diff = dontCheck super.aeson-diff;
             loc = dontCheck super.loc;
+            ip = dontCheck super.ip;
 
             # this will fail with doTemplateHaskell.
             # due to some object-file reloading issue
@@ -162,6 +163,7 @@ let
             cardano-sl-chain      = addBuildTools super.cardano-sl-chain      [ self.buildPackages.hspec-discover ];
             cardano-sl-networking = addBuildTools super.cardano-sl-networking [ self.buildPackages.hspec-discover ];
             cardano-sl-client     = addBuildTools super.cardano-sl-client     [ self.buildPackages.hspec-discover ];
+            cardano-sl-generator  = addBuildTools super.cardano-sl-generator  [ self.buildPackages.hspec-discover ];
             servant-docs          = addBuildTools super.servant-docs          [ self.buildPackages.hspec-discover ];
             # can't check cardano-sl due to an iserv bug
             cardano-sl            = addBuildTools (dontCheck super.cardano-sl) [ self.buildPackages.hspec-discover ];
