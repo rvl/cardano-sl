@@ -161,6 +161,7 @@ let
             cardano-sl-core       = addBuildTools super.cardano-sl-core       [ self.buildPackages.hspec-discover ];
             cardano-sl-chain      = addBuildTools super.cardano-sl-chain      [ self.buildPackages.hspec-discover ];
             cardano-sl-networking = addBuildTools super.cardano-sl-networking [ self.buildPackages.hspec-discover ];
+            servant-docs          = addBuildTools super.servant-docs          [ self.buildPackages.hspec-discover ];
             # can't check cardano-sl due to an iserv bug
             cardano-sl            = addBuildTools (dontCheck super.cardano-sl) [ self.buildPackages.hspec-discover ];
             fclabels              = dontCheck super.fclabels;
@@ -314,6 +315,7 @@ let
           yaml                  = doTemplateHaskell super.yaml;
           neat-interpolation    = doTemplateHaskell super.neat-interpolation;
           monad-par             = doTemplateHaskell super.monad-par;
+          statistics            = doTemplateHaskell super.statistics;
 
           cassava               = super.cassava.override            { flags = { bytestring--lt-0_10_4 = false; }; };
           time-locale-compat    = super.time-locale-compat.override { flags = { old-locale = false; }; };
