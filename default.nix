@@ -279,7 +279,7 @@ let
           cardano-sl-generator  = doTemplateHaskell super.cardano-sl-generator;
           cardano-sl-wallet     = doTemplateHaskell super.cardano-sl-wallet;
       
-          cardano-sl-wallet-new = doTemplateHaskell super.cardano-sl-wallet-new;
+          cardano-sl-wallet-new = (doTemplateHaskell super.cardano-sl-wallet-new).overrideAttrs( old: { NIX_DEBUG = 1; });
           cardano-sl-infra-test = doTemplateHaskell super.cardano-sl-infra-test;
           cardano-sl-explorer   = doTemplateHaskell super.cardano-sl-explorer;
           cardano-sl-binary     = doTemplateHaskell super.cardano-sl-binary;
