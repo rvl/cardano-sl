@@ -231,7 +231,7 @@ let
         pkgs.haskellPackages.override (old:
         let new_overrides = self: super: rec {
         
-          inherit (import ./lib-mingw32.nix { inherit pkgs self; }) doTemplateHaskell appendPatchMingw;
+          inherit (import ./lib-mingw32.nix { inherit pkgs self; }) doTemplateHaskell appendPatchMingw forceCheck;
       
           # TODO: Why is `network` not properly propagated from `libiserv`?
           remote-iserv = with pkgs.haskell.lib; let pkg = addExtraLibrary super.remote-iserv self.network; in
@@ -263,35 +263,35 @@ let
           wai-app-static        = doTemplateHaskell super.wai-app-static;
           purescript-bridge     = doTemplateHaskell super.purescript-bridge;
       
-          cardano-sl-util       = doTemplateHaskell super.cardano-sl-util;
-          cardano-sl-auxx       = doTemplateHaskell super.cardano-sl-auxx;
-          cardano-sl-crypto     = doTemplateHaskell super.cardano-sl-crypto;
-          cardano-sl-crypto-test= doTemplateHaskell super.cardano-sl-crypto-test;
-          cardano-sl-networking = doTemplateHaskell super.cardano-sl-networking;
-          cardano-sl-core       = doTemplateHaskell super.cardano-sl-core;
-          cardano-sl-core-test  = doTemplateHaskell super.cardano-sl-core-test;
+          cardano-sl-util       = forceCheck (doTemplateHaskell super.cardano-sl-util);
+          cardano-sl-auxx       = forceCheck (doTemplateHaskell super.cardano-sl-auxx);
+          cardano-sl-crypto     = forceCheck (doTemplateHaskell super.cardano-sl-crypto);
+          cardano-sl-crypto-test= forceCheck (doTemplateHaskell super.cardano-sl-crypto-test);
+          cardano-sl-networking = forceCheck (doTemplateHaskell super.cardano-sl-networking);
+          cardano-sl-core       = forceCheck (doTemplateHaskell super.cardano-sl-core);
+          cardano-sl-core-test  = forceCheck (doTemplateHaskell super.cardano-sl-core-test);
 
-          cardano-sl-chain      = doTemplateHaskell super.cardano-sl-chain;
-          cardano-sl-chain-test = doTemplateHaskell super.cardano-sl-chain-test;
+          cardano-sl-chain      = forceCheck (doTemplateHaskell super.cardano-sl-chain);
+          cardano-sl-chain-test = forceCheck (doTemplateHaskell super.cardano-sl-chain-test);
           
-          cardano-sl-db         = doTemplateHaskell super.cardano-sl-db;
-          cardano-sl-db-test    = doTemplateHaskell super.cardano-sl-db-test;          
-          cardano-sl-infra      = doTemplateHaskell super.cardano-sl-infra;
-          cardano-sl            = doTemplateHaskell super.cardano-sl;
+          cardano-sl-db         = forceCheck (doTemplateHaskell super.cardano-sl-db);
+          cardano-sl-db-test    = forceCheck (doTemplateHaskell super.cardano-sl-db-test);
+          cardano-sl-infra      = forceCheck (doTemplateHaskell super.cardano-sl-infra);
+          cardano-sl            = forceCheck (doTemplateHaskell super.cardano-sl);
       
           fclabels              = doTemplateHaskell super.fclabels;
           servant-docs          = doTemplateHaskell super.servant-docs;
           wai-websockets        = doTemplateHaskell super.wai-websockets;
           servant-swagger-ui    = doTemplateHaskell super.servant-swagger-ui;
           servant-swagger-ui-redoc = doTemplateHaskell super.servant-swagger-ui-redoc;
-          cardano-sl-client     = doTemplateHaskell super.cardano-sl-client;
-          cardano-sl-generator  = doTemplateHaskell super.cardano-sl-generator;
-          cardano-sl-wallet     = doTemplateHaskell super.cardano-sl-wallet;
+          cardano-sl-client     = forceCheck (doTemplateHaskell super.cardano-sl-client);
+          cardano-sl-generator  = forceCheck (doTemplateHaskell super.cardano-sl-generator);
+          cardano-sl-wallet     = forceCheck (doTemplateHaskell super.cardano-sl-wallet);
       
           cardano-sl-wallet-new = (doTemplateHaskell super.cardano-sl-wallet-new).overrideAttrs( old: { NIX_DEBUG = 1; });
-          cardano-sl-infra-test = doTemplateHaskell super.cardano-sl-infra-test;
-          cardano-sl-explorer   = doTemplateHaskell super.cardano-sl-explorer;
-          cardano-sl-binary     = doTemplateHaskell super.cardano-sl-binary;
+          cardano-sl-infra-test = forceCheck (doTemplateHaskell super.cardano-sl-infra-test);
+          cardano-sl-explorer   = forceCheck (doTemplateHaskell super.cardano-sl-explorer);
+          cardano-sl-binary     = forceCheck (doTemplateHaskell super.cardano-sl-binary);
       
           trifecta              = doTemplateHaskell super.trifecta;
           cardano-sl-tools      = doTemplateHaskell super.cardano-sl-tools;

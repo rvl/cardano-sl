@@ -76,14 +76,10 @@ spaces:
           autoreconf
           ''; 
         });
-        packages.ghc843 = let testWrapper = ps.writeScriptBin "test-wrapper" ''
+        packages.ghc843 = let winTestWrapper = ps.writeScriptBin "test-wrapper" ''
         #!${ps.stdenv.shell}
-        set -x
-        echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-        ls -lah $0*
-        false
-        exec $@
-        echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+        set -euxo pipefail
+        WINEDEBUG=-all WINEPREFIX=$TMP ${pkgs.buildPackages.winePackages.minimal}/bin/wine64 $@*
         ''; in (ps.haskell.packages.ghc843.override {
           overrides = self: super: rec {
             mkDerivation = drv: super.mkDerivation (drv // {
@@ -101,19 +97,22 @@ spaces:
               doHoogle = false;
               doCheck = true; #false;
               configureFlags = (drv.configureFlags or []) ++ [ spaces ];
+            } // lib.optionalAttrs ps.stdenv.hostPlatform.isWindows {
               preCheck = ''
-              set -x
               echo "================================================================================"
-              echo "RUNNING TESTS"
+              echo "RUNNING TESTS for ${drv.pname}"
               echo "================================================================================"
               '';
               postCheck = ''
+              for log in dist/test/*.log; do
+                echo $a
+                cat "$log"
+              done
               echo "================================================================================"
-              echo "END RUNNING TESTS"
+              echo "END RUNNING TESTS for ${drv.pname}"
               echo "================================================================================"
-              set +x
               '';
-              testTarget =  "--test-wrapper ${testWrapper}/bin/test-wrapper";
+              testTarget =  "--verbose --test-wrapper ${winTestWrapper}/bin/test-wrapper";
             });
           };
         });
