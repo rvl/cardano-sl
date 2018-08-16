@@ -4,7 +4,7 @@ import           Test.Hspec (hspec)
 
 import           Spec (spec)
 
-import           Test.Pos.Binary.Helpers (runTests)
+import           Test.Pos.Util.Tripping (runTests)
 import qualified Test.Pos.Core.Bi
 import qualified Test.Pos.Core.EnumEmpTest
 import qualified Test.Pos.Core.Json
