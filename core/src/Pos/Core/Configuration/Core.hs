@@ -159,7 +159,9 @@ defaultGenesisSpec = UnsafeGenesisSpec
     (EpochIndex maxBound)
   )
   (GenesisProtocolConstants 10
-                            (ProtocolMagic 55550001)
+  -- TODO mhueschen : should this be threaded in?
+  -- we might want to test both cases. -------------\/
+                            (ProtocolMagic 55550001 NMMustBeJust)
                             (VssMaxTTL 6)
                             (VssMinTTL 2)
   )

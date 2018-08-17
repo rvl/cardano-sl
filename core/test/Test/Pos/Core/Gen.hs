@@ -171,6 +171,7 @@ import           Pos.Core.Genesis (FakeAvvmOptions (..),
 import           Pos.Core.JsonLog.LogEvents (InvReqDataFlowLog (..))
 import           Pos.Core.Merkle (MerkleRoot (..), MerkleTree (..),
                      mkMerkleTree, mtRoot)
+import           Pos.Core.NetworkMagic (RequiresNetworkMagic (..))
 import           Pos.Core.ProtocolConstants (ProtocolConstants (..),
                      VssMaxTTL (..), VssMinTTL (..))
 import           Pos.Core.Slotting (EpochIndex (..), EpochOrSlot (..),
