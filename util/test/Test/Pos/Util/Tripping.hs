@@ -12,7 +12,7 @@ import           Hedgehog.Internal.TH (TExpQ)
 import qualified Prelude
 import           Text.Show.Pretty (Value (..), parseValue)
 
-import           System.IO (hSetEncoding, stdout, stderr, utf8)
+import           System.IO (hSetEncoding, stderr, stdout, utf8)
 
 import           Universum
 
