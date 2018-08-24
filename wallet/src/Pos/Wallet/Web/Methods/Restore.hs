@@ -9,6 +9,7 @@ module Pos.Wallet.Web.Methods.Restore
        , restoreWalletFromSeed
        , restoreWalletFromSeedNoThrow
        , restoreWalletFromBackup
+       , restoreExternalWallet
        , addInitialRichAccount
 
        -- For testing
@@ -28,8 +29,8 @@ import           System.Wlog (logDebug)
 import qualified Data.HashMap.Strict as HM
 import           Pos.Client.KeyStorage (addSecretKey)
 import           Pos.Core.Genesis (PoorSecret, poorSecretToEncKey)
-import           Pos.Crypto (EncryptedSecretKey, PassPhrase, emptyPassphrase,
-                     firstHardened)
+import           Pos.Crypto (EncryptedSecretKey, PassPhrase, PublicKey,
+                     emptyPassphrase, firstHardened)
 import           Pos.Infra.StateLock (Priority (..), withStateLockNoMetrics)
 import           Pos.Util (HasLens (..), maybeThrow)
 import           Pos.Util.UserSecret (UserSecretDecodingError (..),
@@ -155,10 +156,23 @@ restoreWallet :: ( L.MonadWalletLogic ctx m
                  , MonadUnliftIO m
                  , HasLens SyncQueue ctx SyncQueue
                  ) => EncryptedSecretKey -> m CWallet
-restoreWallet sk = do
-    db <- WS.askWalletDB
-    let credentials@(_, wId) = keyToWalletDecrCredentials $ KeyForRegular sk
+restoreWallet = restoreUsing . KeyForRegular
+
+ -- | Restore a history related to given external wallet, using 'extPublicKey'.
+restoreExternalWallet :: ( L.MonadWalletLogic ctx m
+                         , MonadUnliftIO m
+                         , HasLens SyncQueue ctx SyncQueue
+                         ) => PublicKey -> m CWallet
+restoreExternalWallet = restoreUsing . KeyForExternal
+
+restoreUsing :: ( L.MonadWalletLogic ctx m
+                , MonadUnliftIO m
+                , HasLens SyncQueue ctx SyncQueue
+                ) => WalletDecrCredentialsKey -> m CWallet
+restoreUsing key = do
+    let credentials@(_, wId) = keyToWalletDecrCredentials key
     Restore.restoreWallet credentials
+    db <- WS.askWalletDB
     WS.setWalletReady db wId True
     L.getWallet wId
 

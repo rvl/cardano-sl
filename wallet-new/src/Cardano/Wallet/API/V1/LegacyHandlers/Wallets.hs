@@ -6,6 +6,7 @@ module Cardano.Wallet.API.V1.LegacyHandlers.Wallets (
     , newWallet
     ) where
 
+import qualified Data.Map.Strict as Map
 import           Formatting (build, sformat)
 import           Universum
 import           UnliftIO (MonadUnliftIO)
@@ -24,6 +25,7 @@ import qualified Cardano.Wallet.Kernel.DB.Util.IxSet as IxSet
 import           Pos.Chain.Update ()
 import           Pos.Client.KeyStorage (addPublicKey)
 import qualified Pos.Core as Core
+import           Pos.Crypto (PublicKey)
 
 import           Pos.Util (HasLens (..), maybeThrow)
 import           Pos.Util.Servant (encodeCType)
@@ -31,6 +33,7 @@ import qualified Pos.Wallet.WalletMode as V0
 import           Pos.Wallet.Web.Methods.Logic (MonadWalletLogic,
                      MonadWalletLogicRead)
 import           Pos.Wallet.Web.Tracking.Types (SyncQueue)
+import           Pos.Wallet.Web.Util (getWalletAccountIds)
 import           Servant
 
 
@@ -198,23 +201,64 @@ getUtxoStatistics _ = do
 
 -- | Check if external wallet is presented in node's wallet db.
 checkExternalWallet
-    :: -- ( V0.MonadWalletLogic ctx m
-       -- , V0.MonadWalletHistory ctx m
-       -- , MonadUnliftIO m
-       -- , HasLens SyncQueue ctx SyncQueue
-       -- )
-       -- =>
-    PublicKeyAsBase58
+    :: ( V0.MonadWalletLogic ctx m
+       , V0.MonadWalletHistory ctx m
+       , MonadUnliftIO m
+       , HasLens SyncQueue ctx SyncQueue
+       )
+    => PublicKeyAsBase58
     -> m (WalletResponse WalletAndTxHistory)
-checkExternalWallet _encodedRootPK =
-    error "[CHW-54], Cardano Hardware Wallet, check external wallet, legacy handler, unimplemented yet."
+checkExternalWallet encodedRootPK = do
+    rootPK <- mkPublicKeyOrFail encodedRootPK
+
+    ws <- V0.askWalletSnapshot
+    let walletId = encodeCType . Core.makePubKeyAddressBoot $ rootPK
+    walletExists <- V0.doesWalletExist walletId
+    (v0wallet, transactions, isWalletReady) <- if walletExists
+        then do
+            -- Wallet is here, it means that user already used this wallet (for example,
+            -- hardware device) on this computer, so we have to return stored information
+            -- about this wallet and history of transactions (if any transactions was made).
+            --
+            -- By default we have to specify account and address for getting transactions
+            -- history. But currently all we have is root PK, so we return complete history
+            -- of transactions, for all accounts and addresses.
+            let allAccounts = getWalletAccountIds ws walletId
+                -- We want to get a complete history, so we shouldn't specify an address.
+                address = Nothing
+            (V0.WalletHistory history, _) <- V0.getHistory walletId
+                                                           (const allAccounts)
+                                                           address
+            v1Transactions <- mapM (\(_, (v0Tx, _)) -> migrate v0Tx) $ Map.toList history
+            (,,) <$> V0.getWallet walletId
+                 <*> pure v1Transactions
+                 <*> pure True
+        else do
+            -- No such wallet in db, it means that this wallet (for example, hardware
+            -- device) was not used on this computer. But since this wallet _could_ be
+            -- used on another computer, we have to (try to) restore this wallet.
+            -- Since there's no wallet meta-data, we use default one.
+            let largeCurrencyUnit = 0
+                defaultMeta = V0.CWalletMeta "External wallet"
+                                             V0.CWAStrict
+                                             largeCurrencyUnit
+                -- This is a new wallet, currently un-synchronized, so there's no
+                -- history of transactions yet.
+                transactions = []
+            (,,) <$> restoreExternalWallet defaultMeta encodedRootPK
+                 <*> pure transactions
+                 <*> pure False -- We restore wallet, so it's unready yet.
+
+    v1wallet <- migrateWallet ws v0wallet isWalletReady
+    let walletAndTxs = WalletAndTxHistory v1wallet transactions
+    single <$> pure walletAndTxs
 
 -- | Creates a new or restores an existing external @wallet@ given a 'NewExternalWallet' payload.
 -- Returns to the client the representation of the created or restored wallet in the 'Wallet' type.
 newExternalWallet
     :: ( MonadThrow m
        , MonadUnliftIO m
-       -- , HasLens SyncQueue ctx SyncQueue
+       , HasLens SyncQueue ctx SyncQueue
        , V0.MonadBlockchainInfo m
        , V0.MonadWalletLogic ctx m
        )
@@ -240,9 +284,7 @@ createNewExternalWallet
     -> PublicKeyAsBase58
     -> m V0.CWallet
 createNewExternalWallet walletMeta encodedRootPK = do
-    rootPK <- case mkPublicKeyFromBase58 encodedRootPK of
-        Left problem -> throwM (InvalidPublicKey $ sformat build problem)
-        Right rootPK -> return rootPK
+    rootPK <- mkPublicKeyOrFail encodedRootPK
 
     -- This extended public key will be used during synchronization
     -- with the blockchain.
@@ -262,17 +304,30 @@ createNewExternalWallet walletMeta encodedRootPK = do
 
 -- | Restore external wallet using it's root public key and metadata.
 restoreExternalWallet
-    :: -- ( MonadThrow m
-       -- , MonadUnliftIO m
-       -- , HasLens SyncQueue ctx SyncQueue
-       -- , V0.MonadWalletLogic ctx m
-       -- )
-       -- =>
-    V0.CWalletMeta
+    :: ( MonadThrow m
+       , MonadUnliftIO m
+       , HasLens SyncQueue ctx SyncQueue
+       , V0.MonadWalletLogic ctx m
+       )
+    => V0.CWalletMeta
     -> PublicKeyAsBase58
     -> m V0.CWallet
-restoreExternalWallet _walletMeta _encodedRootPK =
-    error "[CHW-54], restore external wallet, unimplemented yet."
+restoreExternalWallet walletMeta encodedRootPK = do
+    rootPK <- mkPublicKeyOrFail encodedRootPK
+
+    let walletId = encodeCType . Core.makePubKeyAddressBoot $ rootPK
+
+    -- Public key will be used during synchronization with the blockchain.
+    addPublicKey rootPK
+
+    let isReady = False -- Because we want to sync this wallet with the blockchain!
+
+    -- Create new external wallet with initial account.
+    void $ V0.createWalletSafe walletId walletMeta isReady
+    addInitAccountInExternalWallet walletId
+
+    -- Restoring this wallet.
+    V0.restoreExternalWallet rootPK
 
 addInitAccountInExternalWallet
     :: ( MonadThrow m
@@ -294,10 +349,9 @@ deleteExternalWallet
     :: (V0.MonadWalletLogic ctx m)
     => PublicKeyAsBase58
     -> m NoContent
-deleteExternalWallet encodedRootPK =
-    case V1.mkPublicKeyFromBase58 encodedRootPK of
-        Left problem -> throwM (InvalidPublicKey $ sformat build problem)
-        Right rootPK -> V0.deleteExternalWallet rootPK
+deleteExternalWallet encodedRootPK = do
+    rootPK <- mkPublicKeyOrFail encodedRootPK
+    V0.deleteExternalWallet rootPK
 
 migrateWallet
     :: ( V0.MonadWalletLogicRead ctx m
@@ -319,3 +373,12 @@ migrateWallet snapshot wallet walletIsReady = do
     let walletType = if walletIsExternal then WalletExternal else WalletRegular
     currentDepth <- V0.networkChainDifficulty
     migrate (wallet, walletInfo, walletType, currentDepth)
+
+mkPublicKeyOrFail
+    :: MonadThrow m
+    => PublicKeyAsBase58
+    -> m PublicKey
+mkPublicKeyOrFail encodedRootPK =
+    case mkPublicKeyFromBase58 encodedRootPK of
+        Left problem -> throwM (InvalidPublicKey $ sformat build problem)
+        Right rootPK -> return rootPK
