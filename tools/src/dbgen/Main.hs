@@ -22,8 +22,7 @@ import           Options.Generic (getRecord)
 import           Pos.Chain.Txp (TxpConfiguration)
 import           Pos.Client.CLI (CommonArgs (..), CommonNodeArgs (..),
                      NodeArgs (..), getNodeParams, gtSscParams)
-import           Pos.Core as Core (Config (..), Timestamp (..),
-                     configBlkSecurityParam)
+import           Pos.Core as Core (Config (..), Timestamp (..))
 import           Pos.DB.DB (initNodeDBs)
 import           Pos.DB.Rocks.Functions (openNodeDBs)
 import           Pos.DB.Rocks.Types (NodeDBs)
@@ -117,10 +116,10 @@ newRealModeContext coreConfig txpConfig dbs confOpts publicKeyPath secretKeyPath
     let vssSK = fromJust $ npUserSecret nodeParams ^. usVss
     let gtParams = gtSscParams cArgs vssSK (npBehaviorConfig nodeParams)
     bracketNodeResources @()
-        (configBlkSecurityParam coreConfig)
+        coreConfig
         nodeParams
         gtParams
-        (txpGlobalSettings (configProtocolMagic coreConfig) txpConfig)
+        (txpGlobalSettings coreConfig txpConfig)
         (initNodeDBs coreConfig) $ \NodeResources{..} ->
         RealModeContext <$> pure dbs
                         <*> pure nrSscState

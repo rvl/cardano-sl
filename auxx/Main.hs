@@ -17,8 +17,7 @@ import           Ntp.Client (NtpConfiguration)
 import           Pos.Chain.Txp (TxpConfiguration)
 import qualified Pos.Client.CLI as CLI
 import           Pos.Context (NodeContext (..))
-import           Pos.Core as Core (Config (..), ConfigurationError,
-                     configBlkSecurityParam)
+import           Pos.Core as Core (Config (..), ConfigurationError)
 import           Pos.DB.DB (initNodeDBs)
 import           Pos.DB.Txp (txpGlobalSettings)
 import           Pos.Infra.Diffusion.Types (Diffusion, hoistDiffusion)
@@ -104,7 +103,10 @@ action opts@AuxxOptions {..} command = do
     runWithConfig :: HasConfigurations => PrintAction IO -> Core.Config -> TxpConfiguration -> NtpConfiguration -> IO ()
     runWithConfig printAction coreConfig txpConfig ntpConfig = do
         printAction "Mode: with-config"
-        CLI.printInfoOnStart aoCommonNodeArgs ntpConfig txpConfig
+        CLI.printInfoOnStart aoCommonNodeArgs
+                             (configGenesisData coreConfig)
+                             ntpConfig
+                             txpConfig
         (nodeParams, tempDbUsed) <- correctNodeParams opts =<< CLI.getNodeParams
             loggerName
             cArgs
@@ -123,8 +125,11 @@ action opts@AuxxOptions {..} command = do
                               (npUserSecret nodeParams ^. usVss)
             sscParams = CLI.gtSscParams cArgs vssSK (npBehaviorConfig nodeParams)
 
-        let pm = configProtocolMagic coreConfig
-        bracketNodeResources (configBlkSecurityParam coreConfig) nodeParams sscParams (txpGlobalSettings pm txpConfig) (initNodeDBs coreConfig) $ \nr ->
+        bracketNodeResources coreConfig
+                             nodeParams
+                             sscParams
+                             (txpGlobalSettings coreConfig txpConfig)
+                             (initNodeDBs coreConfig) $ \nr ->
             let NodeContext {..} = nrContext nr
                 modifier = if aoStartMode == WithNode
                            then runNodeWithSinglePlugin coreConfig txpConfig nr
