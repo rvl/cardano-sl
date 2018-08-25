@@ -69,6 +69,8 @@ handlers pm txpConfig submitTx =
         :<|> allTransactions
         :<|> estimateFees pm
         :<|> redeemAda pm txpConfig submitTx
+        :<|> newUnsignedTransaction pm
+        :<|> newSignedTransaction pm txpConfig submitTx
 
 newTransaction
     :: forall ctx m
@@ -192,3 +194,26 @@ redeemAda pm txpConfig submitTx r = do
                     , V0.crSeed = seed
                     }
             V0.redeemAda pm txpConfig submitTx spendingPassword cwalletRedeem
+
+newUnsignedTransaction
+    :: -- forall ctx m . (V0.MonadWalletTxFull ctx m)
+       -- =>
+    ProtocolMagic
+    -> PaymentWithChangeAddress
+    -> m (WalletResponse RawTransaction)
+newUnsignedTransaction _pm _paymentWithChangeAddress =
+    error "[CHW-57], for external wallets, unimplemented yet."
+
+-- | It is assumed that we received a transaction which was signed
+-- on the client side (mobile client or hardware wallet).
+-- Now we have to submit this transaction as usually.
+newSignedTransaction
+    :: -- forall ctx m . (V0.MonadWalletTxFull ctx m)
+       -- =>
+    ProtocolMagic
+    -> TxpConfiguration
+    -> (TxAux -> m Bool)
+    -> SignedTransaction
+    -> m (WalletResponse Transaction)
+newSignedTransaction _pm _txpConfig _submitTx _signedTransaction =
+    error "[CHW-57], for external wallets, unimplemented yet."

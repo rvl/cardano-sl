@@ -138,6 +138,10 @@ mkHttpClient baseUrl manager = WalletClient
         = run . getTransactionFeeR
     , redeemAda
         = run ... redeemAdaR
+    , postUnsignedTransaction
+        = run . postUnsignedTransactionR
+    , postSignedTransaction
+        = run . postSignedTransactionR
     -- settings
     , getNodeSettings
         = run getNodeSettingsR
@@ -192,6 +196,8 @@ mkHttpClient baseUrl manager = WalletClient
         :<|> getTransactionIndexFilterSortsR
         :<|> getTransactionFeeR
         :<|> redeemAdaR
+        :<|> postUnsignedTransactionR
+        :<|> postSignedTransactionR
         = transactionsAPI
 
     addressesAPI

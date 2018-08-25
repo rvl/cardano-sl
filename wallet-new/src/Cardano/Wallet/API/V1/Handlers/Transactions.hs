@@ -37,6 +37,8 @@ handlers aw = newTransaction aw
          :<|> getTransactionsHistory (WalletLayer.walletPassiveLayer aw)
          :<|> estimateFees aw
          :<|> redeemAda aw
+         :<|> newUnsignedTransaction aw
+         :<|> newSignedTransaction aw
 
 -- Matches the input InputGroupingPolicy with the Kernel's 'InputGrouping'
 toInputGrouping :: Maybe (V1 InputSelectionPolicy) -> InputGrouping
@@ -115,3 +117,15 @@ redeemAda aw redemption = liftIO $ do
   where
     embedErr :: UnknownHdAccount -> WalletLayer.RedeemAdaError
     embedErr = WalletLayer.RedeemAdaError . Kernel.RedeemAdaUnknownAccountId
+
+newUnsignedTransaction :: ActiveWalletLayer IO
+                       -> PaymentWithChangeAddress
+                       -> Handler (WalletResponse RawTransaction)
+newUnsignedTransaction _aw _paymentWithChangeAddress =
+    error "[CHW-57], for external wallets, unimplemented yet."
+
+newSignedTransaction :: ActiveWalletLayer IO
+                     -> SignedTransaction
+                     -> Handler (WalletResponse Transaction)
+newSignedTransaction _aw _signedTx =
+    error "[CHW-57], for external wallets, unimplemented yet."
