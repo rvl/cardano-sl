@@ -1,44 +1,57 @@
 {-# LANGUAGE FlexibleContexts           #-}
+{-# LANGUAGE FlexibleInstances          #-}
 {-# LANGUAGE FunctionalDependencies     #-}
 {-# LANGUAGE GADTs                      #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE MultiParamTypeClasses      #-}
 {-# LANGUAGE NamedFieldPuns             #-}
+{-# LANGUAGE PolyKinds                  #-}
 {-# LANGUAGE RankNTypes                 #-}
 {-# LANGUAGE RecordWildCards            #-}
 {-# LANGUAGE ScopedTypeVariables        #-}
+{-# LANGUAGE TypeApplications           #-}
 {-# LANGUAGE TypeFamilies               #-}
 module ConsumerProtocol where
 
-import           Data.List (foldl', tails)
-import           Data.Word
---import Data.Maybe
-import           Data.Hashable
---import qualified Data.Set as Set
-import           Data.Map (Map)
-import qualified Data.Map as Map
-import           Data.PriorityQueue.FingerTree (PQueue)
-import qualified Data.PriorityQueue.FingerTree as PQueue
-
-import           Control.Applicative
-import           Control.Concurrent.STM (STM, retry)
-import           Control.Exception (assert)
+-- import           Data.Word
+-- import           Control.Applicative
+-- import           Control.Concurrent.STM (STM, retry)
+-- import           Control.Exception (assert)
 import           Control.Monad
-import           Control.Monad.ST.Lazy
-import           Data.STRef.Lazy
-import           System.Random (StdGen, mkStdGen, randomR)
+-- import           Control.Monad.ST.Lazy
+import           Control.Monad.Free (Free (..))
+import           Control.Monad.Free as Free
+-- import           Data.STRef.Lazy
+-- import           System.Random (StdGen, mkStdGen, randomR)
 
-import           Test.QuickCheck
+-- import           Test.QuickCheck
 
+import           Block (Block, Point, ReaderId, blockPoint)
+import           Chain (ChainFragment (..), absChainFragment, applyChainUpdate, findIntersection)
+import           Chain.Update (ChainUpdate (..))
 import           ChainExperiment2
 import           MonadClass
-import           Sim (Chan (..), SimM, flipChan)
+import           Sim (SimChan (..), SimF, SimMVar (..), flipSimChan)
 
 --
 -- IPC based protocol
 --
 
+data SendRecvF (chan :: * -> * -> *) a where
+  NewChanF :: (chan s r -> a) -> SendRecvF chan a
+  SendMsgF :: chan s r -> s -> a -> SendRecvF chan a
+  RecvMsgF :: chan s r -> (r -> a) -> SendRecvF chan a
 
+instance Functor (SendRecvF chan) where
+  fmap f (NewChanF k)     = NewChanF (f . k)
+  fmap f (SendMsgF c s a) = SendMsgF c s (f a)
+  fmap f (RecvMsgF c k)   = RecvMsgF c (f . k)
+
+instance MonadSendRecv (Free (SendRecvF chan)) where
+  type BiChan (Free (SendRecvF chan)) = chan
+  newChan        = Free.liftF $ NewChanF id
+  sendMsg chan s = Free.liftF $ SendMsgF chan s ()
+  recvMsg chan   = Free.liftF $ RecvMsgF chan id
 
 -- | In this protocol the consumer always initiates things and the producer
 -- replies. This is the type of messages that the consumer sends.
@@ -87,7 +100,8 @@ consumerSideProtocol1 ConsumerHandlers{..} chan = do
       say ("ap blocks from point X to point Y")
       return ()
 
-    handleChainUpdate (MsgRollBackward p) = do
+    handleChainUpdate (MsgRollBackward _) = do
+      -- TODO: finish
       say ("rolling back N blocks from point X to point Y")
       return ()
 
@@ -156,15 +170,15 @@ producerSideProtocol1 ProducerHandlers{..} chan =
 
 
 exampleProducer :: forall m. (MonadConc m, MonadSay m)
-                => MVar m (ChainProducerState, MVar m (ChainProducerState))
+                => MVar m (ChainProducerState ChainFragment, MVar m (ChainProducerState ChainFragment))
                 -> ProducerHandlers m ReaderId
 exampleProducer chainvar =
     ProducerHandlers {..}
   where
     findIntersectionRange :: Point -> [Point] -> m (Maybe (Point, Point))
     findIntersectionRange hpoint points = do
-      (cps, _) <- readMVar chainvar
-      return $! findIntersection cps hpoint points
+      (ChainProducerState {chainState}, _) <- readMVar chainvar
+      return $! findIntersection chainState hpoint points
 
     establishReaderState :: Point -> Point -> m ReaderId
     establishReaderState hpoint ipoint =
@@ -176,7 +190,7 @@ exampleProducer chainvar =
     updateReaderState rid hpoint mipoint =
       modifyMVar_ chainvar $ \(cps, mcps) ->
         let !ncps = updateReader rid hpoint mipoint cps
-        in return $! (ncps, mcps)
+        in return (ncps, mcps)
 
     tryReadChainUpdate :: ReaderId -> m (Maybe (ConsumeChain Block))
     tryReadChainUpdate rid =
@@ -198,7 +212,7 @@ exampleProducer chainvar =
           Nothing     -> readChainUpdate rid
 
 exampleConsumer :: forall m. MonadConc m
-                => MVar m (ChainProducerState, MVar m (ChainProducerState))
+                => MVar m (ChainProducerState ChainFragment, MVar m (ChainProducerState ChainFragment))
                 -> ConsumerHandlers m
 exampleConsumer chainvar = ConsumerHandlers {..}
     where
@@ -206,23 +220,23 @@ exampleConsumer chainvar = ConsumerHandlers {..}
     getChainPoints = do
         (ChainProducerState {chainState}, _) <- readMVar chainvar
         -- TODO: bootstraping case (client has no blocks)
-        let (p : ps) = map blockPoint $ absChainState chainState
+        let (p : ps) = map blockPoint $ absChainFragment chainState
         return (p, ps)
 
     addBlock :: Block -> m ()
     addBlock b = void $ modifyMVar_ chainvar $ \(cps@ChainProducerState {chainState}, mcps) -> do
-        let !chainState' = applyChainStateUpdate (AddBlock b) chainState
+        let !chainState' = applyChainUpdate (AddBlock b) chainState
         let !cps' = cps { chainState = chainState' }
-        -- wake up awaiting producers
+        -- wake up awaiting producer
         _ <- tryPutMVar mcps cps'
         mcps' <- newEmptyMVar
         return (cps', mcps')
 
     rollbackTo :: Point -> m ()
     rollbackTo p = void $ modifyMVar_ chainvar $ \(cps@ChainProducerState {chainState}, mcps) -> do
-        let !chainState' = applyChainStateUpdate (RollBack p) chainState
+        let !chainState' = applyChainUpdate (RollBack p) chainState
         let !cps' = cps { chainState = chainState' }
-        -- wake up awaiting producers
+        -- wake up awaiting producer
         _ <- tryPutMVar mcps cps'
         mcps' <- newEmptyMVar
         return (cps', mcps')
@@ -235,12 +249,12 @@ exampleConsumer chainvar = ConsumerHandlers {..}
 -- | Given two sides of a protocol, ...
 --
 simulateWire
-  :: (Chan s p c -> SimM s ())
-  -> (Chan s c p -> SimM s ())
-  -> SimM s ()
+  :: forall p c s .
+     (SimChan s p c -> Free (SimF s) ())
+  -> (SimChan s c p -> Free (SimF s) ())
+  -> Free (SimF s) ()
 simulateWire protocolSideA protocolSideB = do
     chan <- newChan
     fork $ protocolSideA chan
-    fork $ protocolSideB (flipChan chan)
+    fork $ protocolSideB (flipSimChan chan)
     return ()
-
