@@ -84,15 +84,13 @@ data NewTransactionError =
   | NewTransactionErrorCreateAddressFailed Kernel.CreateAddressError
   | NewTransactionErrorSignTxFailed SignTransactionError
   | NewTransactionInvalidTxIn
-
-instance Eq NewTransactionError where
-    (==) = error ""
+  deriving (Generic, Eq, Show)
 
 instance Aeson.ToJSON NewTransactionError where
-    toJSON = error ""
+    toJSON = Aeson.genericToJSON Aeson.defaultOptions
 
 instance Aeson.FromJSON NewTransactionError where
-    parseJSON = error ""
+    parseJSON = Aeson.genericParseJSON Aeson.defaultOptions
 
 instance Buildable NewTransactionError where
     build (NewTransactionUnknownAccount err) =
@@ -404,6 +402,13 @@ data SignTransactionError =
     SignTransactionMissingKey Address
   | SignTransactionErrorUnknownAddress Address
   | SignTransactionErrorNotOwned Address
+  deriving (Generic, Eq, Show)
+
+instance Aeson.ToJSON SignTransactionError where
+    toJSON = Aeson.genericToJSON Aeson.defaultOptions
+
+instance Aeson.FromJSON SignTransactionError where
+    parseJSON = Aeson.genericParseJSON Aeson.defaultOptions
 
 instance Buildable SignTransactionError where
     build (SignTransactionMissingKey addr) =
