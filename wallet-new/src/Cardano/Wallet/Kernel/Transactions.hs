@@ -416,7 +416,10 @@ instance Buildable SignTransactionError where
 -- in order to be able to generate an Arbitrary address we'd need to use
 -- the cardano-sl-core test package
 instance Arbitrary SignTransactionError where
-    arbitrary = oneof []
+    arbitrary = oneof [ SignTransactionMissingKey <$> arbitrary
+                      , SignTransactionErrorUnknownAddress <$> arbitrary
+                      , SignTransactionErrorNotOwned <$> arbitrary
+                      ]
 
 mkSigner :: PassPhrase
          -> Maybe EncryptedSecretKey
@@ -507,7 +510,12 @@ instance Buildable RedeemAdaError where
       bprint ("RedeemAdaNewForeignFailed " % build) err
 
 instance Arbitrary RedeemAdaError where
-    arbitrary = oneof []
+    arbitrary = oneof [ RedeemAdaUnknownAccountId <$> arbitrary
+                      , RedeemAdaErrorCreateAddressFailed <$> arbitrary
+                      , RedeemAdaNotAvailable <$> arbitrary
+                      , RedeemAdaMultipleOutputs <$> arbitrary
+                      , RedeemAdaNewForeignFailed <$> arbitrary
+                      ]
 
 -- | Redeem Ada voucher
 --
