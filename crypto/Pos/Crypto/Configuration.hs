@@ -1,3 +1,6 @@
+{-# OPTIONS_GHC -fno-warn-simplifiable-class-constraints #-}
+-- TODO mhueschen : i don't think this should be necessary
+
 module Pos.Crypto.Configuration
        ( ProtocolMagic (..)
        , RequiresNetworkMagic (..)
@@ -8,11 +11,12 @@ import           Universum
 import           Data.Aeson ((.:), (.=))
 import qualified Data.Aeson as A
 import           Data.Aeson.Types (typeMismatch)
+import           Data.List (lookup)
 import           Data.SafeCopy (base, deriveSafeCopySimple)
 import           Text.JSON.Canonical (FromJSON (..), JSValue (..),
                      ReportSchemaErrors, ToJSON (..), expected)
 
-import           Pos.Core.Genesis.Canonical ()
+import           Pos.Util.Json.Canonical ()
 import           Pos.Util.Util (toAesonError)
 
 
@@ -53,8 +57,8 @@ instance Monad m => ToJSON m RequiresNetworkMagic where
 instance ReportSchemaErrors m => FromJSON m RequiresNetworkMagic where
     fromJSON = \case
         (JSString "NMMustBeNothing") -> pure NMMustBeNothing
-        (JSString    "NMMustBeJust") -> pure NMMustBeJust
-        other                        ->
+        (JSString "NMMustBeJust")    -> pure NMMustBeJust
+        other ->
             expected "NMMustBeNothing | NMMustBeJust" (Just (show other))
 
 
@@ -102,14 +106,25 @@ instance Monad m => ToJSON m ProtocolMagic where
         <$> toJSON ident
         <*> toJSON rnm
 
+-- Here we default to `NMMustBeJust` (what testnets use) if only
+-- a ProtocolMagic identifier is provided.
 instance ReportSchemaErrors m => FromJSON m ProtocolMagic where
-    fromJSON = undefined {- \case
-        (JSString "NMMustBeNothing") -> pure NMMustBeNothing
-        (JSString    "NMMustBeJust") -> pure NMMustBeJust
-        other                        ->
+    fromJSON = \case
+        (JSNum n) -> pure (ProtocolMagic (fromIntegral n) NMMustBeJust)
+        (JSObject dict) -> ProtocolMagic
+            <$> expectLookup "pm: <int>" "pm" dict
+            <*> expectLookup "requiresNetworkMagic: <NMMustBeNothing | \
+                             \NMMustBeJust>"
+                             "requiresNetworkMagic"
+                             dict
+        other ->
             expected "NMMustBeNothing | NMMustBeJust" (Just (show other))
-            -}
 
+expectLookup :: (ReportSchemaErrors m, FromJSON m a)
+             => String -> String -> [(String, JSValue)] -> m a
+expectLookup msg key dict = case lookup key dict of
+    Nothing -> expected msg Nothing
+    Just x  -> fromJSON x
 
 {-
 

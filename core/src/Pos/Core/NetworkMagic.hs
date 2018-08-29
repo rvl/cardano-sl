@@ -1,6 +1,5 @@
 module Pos.Core.NetworkMagic
        ( NetworkMagic (..)
-       , RequiresNetworkMagic (..)
        , makeNetworkMagic
        ) where
 
