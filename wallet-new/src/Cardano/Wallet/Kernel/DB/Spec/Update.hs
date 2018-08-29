@@ -134,7 +134,7 @@ instance Arbitrary ApplyBlockFailed where
 --   (and do not store private keys) so we cannot actually sign transactions.
 newPending :: forall c. IsCheckpoint c
            => InDb Txp.TxAux
-           -> Update' (NewestFirst StrictNonEmpty c) NewPendingFailed ()
+           -> Update' (Checkpoints c) NewPendingFailed ()
 newPending (InDb tx) = do
     checkpoints <- get
     let (_available, unavailable) =
@@ -143,7 +143,7 @@ newPending (InDb tx) = do
       then put $ insertPending checkpoints
       else throwError $ NewPendingInputsUnavailable (InDb unavailable)
   where
-    insertPending :: NewestFirst StrictNonEmpty c -> NewestFirst StrictNonEmpty c
+    insertPending :: Checkpoints c -> Checkpoints c
     insertPending = currentPending %~ Pending.insert tx
 
 -- | Insert new foreign transaction
@@ -155,7 +155,7 @@ newPending (InDb tx) = do
 -- impact this has on the reasoning in the wallet spec.
 newForeign :: forall c. IsCheckpoint c
            => InDb Txp.TxAux
-           -> Update' (NewestFirst StrictNonEmpty c) NewForeignFailed ()
+           -> Update' (Checkpoints c) NewForeignFailed ()
 newForeign (InDb tx) = do
     checkpoints <- get
     let (available, _unavailable) =
@@ -164,26 +164,26 @@ newForeign (InDb tx) = do
       then put $ insertForeign checkpoints
       else throwError $ NewForeignInputsAvailable (InDb available)
   where
-    insertForeign :: NewestFirst StrictNonEmpty c -> NewestFirst StrictNonEmpty c
+    insertForeign :: Checkpoints c -> Checkpoints c
     insertForeign = currentForeign %~ Pending.insert tx
 
 -- | Cancel the input set of cancelled transactions from @all@ the 'Checkpoints'
 -- of an 'Account'.
 cancelPending :: forall c. IsCheckpoint c
               => Set Txp.TxId
-              -> NewestFirst StrictNonEmpty c -> NewestFirst StrictNonEmpty c
-cancelPending txids = map (cpPending %~ Pending.delete txids)
+              -> Checkpoints c -> Checkpoints c
+cancelPending txids = liftCheckpoints $ map (cpPending %~ Pending.delete txids)
 
 -- | Apply the prefiltered block to the specified wallet
 --
 -- Additionally returns the set of transactions removed from pending.
 applyBlock :: SecurityParameter
            -> PrefilteredBlock
-           -> Update' (NewestFirst StrictNonEmpty Checkpoint)
+           -> Update' (Checkpoints Checkpoint)
                       ApplyBlockFailed
                       (Set Txp.TxId)
 applyBlock (SecurityParameter k) pb = do
-    checkpoints <- get
+    checkpoints@(Checkpoints ls)  <- get
     let current           = checkpoints ^. currentCheckpoint
         utxo              = current ^. checkpointUtxo        . fromDb
         balance           = current ^. checkpointUtxoBalance . fromDb
@@ -192,14 +192,14 @@ applyBlock (SecurityParameter k) pb = do
         blockMeta'        = updateBlockMeta pb (current ^. checkpointBlockMeta)
         (foreign', rem2)  = updatePending   pb (current ^. checkpointForeign)
     if (pfbContext pb) `blockContextSucceeds` (current ^. checkpointContext) then do
-      put $ takeNewest k $ NewestFirst $ Checkpoint {
+      put $ Checkpoints . takeNewest k . NewestFirst $ Checkpoint {
           _checkpointUtxo        = InDb utxo'
         , _checkpointUtxoBalance = InDb balance'
         , _checkpointPending     = pending'
         , _checkpointBlockMeta   = blockMeta'
         , _checkpointForeign     = foreign'
         , _checkpointContext     = Just $ pfbContext pb
-        } SNE.<| getNewestFirst checkpoints
+        } SNE.<| getNewestFirst ls
       return $ Set.unions [rem1, rem2]
     else
       throwError $ ApplyBlockNotSuccessor
@@ -212,11 +212,11 @@ applyBlock (SecurityParameter k) pb = do
 -- we did, it might be impossible for the historical checkpoints to ever
 -- catch up with the current ones.
 applyBlockPartial :: PrefilteredBlock
-                  -> Update' (NewestFirst StrictNonEmpty PartialCheckpoint)
+                  -> Update' (Checkpoints PartialCheckpoint)
                              ApplyBlockFailed
                              (Set Txp.TxId)
 applyBlockPartial pb = do
-    checkpoints <- get
+    checkpoints@(Checkpoints ls)  <- get
     let current           = checkpoints ^. currentCheckpoint
         utxo              = current ^. pcheckpointUtxo        . fromDb
         balance           = current ^. pcheckpointUtxoBalance . fromDb
@@ -225,14 +225,14 @@ applyBlockPartial pb = do
         blockMeta'        = updateLocalBlockMeta pb (current ^. pcheckpointBlockMeta)
         (foreign', rem2)  = updatePending        pb (current ^. pcheckpointForeign)
     if (pfbContext pb) `blockContextSucceeds` (current ^. pcheckpointContext) then do
-      put $ NewestFirst $ PartialCheckpoint {
+      put $ Checkpoints . NewestFirst $ PartialCheckpoint {
           _pcheckpointUtxo        = InDb utxo'
         , _pcheckpointUtxoBalance = InDb balance'
         , _pcheckpointPending     = pending'
         , _pcheckpointBlockMeta   = blockMeta'
         , _pcheckpointForeign     = foreign'
         , _pcheckpointContext     = Just $ pfbContext pb
-        } SNE.<| getNewestFirst checkpoints
+        } SNE.<| getNewestFirst ls
       return $ Set.unions [rem1, rem2]
     else
       throwError $ ApplyBlockNotSuccessor
@@ -251,14 +251,14 @@ applyBlockPartial pb = do
 -- so that the submission layer can start sending those out again.
 --
 -- This is an internal function only, and not exported. See 'switchToFork'.
-rollback :: Update' (NewestFirst StrictNonEmpty Checkpoint) e Pending
+rollback :: Update' (Checkpoints Checkpoint) e Pending
 rollback = state $ \case
-    NewestFirst (c :| SL.Nil)        -> (Pending.empty, NewestFirst $ c :| SL.Nil)
-    NewestFirst (c :| SL.Cons c' cs) -> (
+    Checkpoints (NewestFirst (c :| SL.Nil))        -> (Pending.empty, Checkpoints . NewestFirst $ c :| SL.Nil)
+    Checkpoints (NewestFirst (c :| SL.Cons c' cs)) -> (
           Pending.union
             ((c' ^. checkpointPending) Pending.\\ (c ^. checkpointPending))
             ((c' ^. checkpointForeign) Pending.\\ (c ^. checkpointForeign))
-        , NewestFirst $ Checkpoint {
+        , Checkpoints . NewestFirst $ Checkpoint {
               _checkpointUtxo        = c' ^. checkpointUtxo
             , _checkpointUtxoBalance = c' ^. checkpointUtxoBalance
             , _checkpointBlockMeta   = c' ^. checkpointBlockMeta
@@ -273,7 +273,7 @@ rollback = state $ \case
 -- | Observable rollback, used in testing only
 --
 -- See 'switchToFork' for production use.
-observableRollbackUseInTestsOnly :: Update' (NewestFirst StrictNonEmpty Checkpoint) e Pending
+observableRollbackUseInTestsOnly :: Update' (Checkpoints Checkpoint) e Pending
 observableRollbackUseInTestsOnly = rollback
 
 -- | Switch to a fork
@@ -287,7 +287,7 @@ observableRollbackUseInTestsOnly = rollback
 switchToFork :: SecurityParameter
              -> Int  -- ^ Number of blocks to rollback
              -> OldestFirst [] PrefilteredBlock -- ^ Blocks to apply
-             -> Update' (NewestFirst StrictNonEmpty Checkpoint)
+             -> Update' (Checkpoints Checkpoint)
                         ApplyBlockFailed
                         (Pending, Set Txp.TxId)
 switchToFork k numRollbacks blocksToApply = do
@@ -296,7 +296,7 @@ switchToFork k numRollbacks blocksToApply = do
   where
     rollbacks :: Pending -- Accumulator: reintroduced pending transactions
               -> Int     -- Number of rollback to do
-              -> Update' (NewestFirst StrictNonEmpty Checkpoint)
+              -> Update' (Checkpoints Checkpoint)
                          e
                          Pending
     rollbacks !accNew 0 = return accNew
@@ -307,7 +307,7 @@ switchToFork k numRollbacks blocksToApply = do
     applyBlocks :: Pending -- Accumulator: reintroduced pending transactions
                 -> Set Txp.TxId -- Accumulator: removed pending transactions
                 -> [PrefilteredBlock]
-                -> Update' (NewestFirst StrictNonEmpty Checkpoint)
+                -> Update' (Checkpoints Checkpoint)
                            ApplyBlockFailed
                            (Pending, Set Txp.TxId)
     applyBlocks !accNew !accRem []     = return (accNew, accRem)
