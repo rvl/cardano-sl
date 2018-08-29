@@ -1,5 +1,7 @@
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE LambdaCase    #-}
+{-# LANGUAGE DeriveGeneric      #-}
+{-# LANGUAGE LambdaCase         #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# LANGUAGE StandaloneDeriving #-}
 
 -- | Convert to and from V1 types
 module Cardano.Wallet.WalletLayer.Kernel.Conv (
@@ -32,7 +34,7 @@ import qualified Prelude
 
 import           Control.Lens (to)
 import           Control.Monad.Except
-import           Crypto.Error (CryptoError)
+import           Crypto.Error (CryptoError (..))
 import           Data.Aeson as Aeson
 import           Data.ByteString.Base58 (bitcoinAlphabet, decodeBase58)
 import           Formatting (bprint, build, formatToString, sformat, shown, (%))
@@ -222,10 +224,19 @@ data InvalidRedemptionCode =
   deriving (Generic, Eq)
 
 instance Aeson.ToJSON InvalidRedemptionCode where
-    toJSON = error "TODO"
+    toJSON = Aeson.genericToJSON Aeson.defaultOptions
 
 instance Aeson.FromJSON InvalidRedemptionCode where
-    parseJSON = error "TODO"
+    parseJSON = Aeson.genericParseJSON Aeson.defaultOptions
+
+--instance Generic CryptoError
+deriving instance Generic CryptoError
+
+instance Aeson.ToJSON CryptoError where
+    toJSON = Aeson.genericToJSON Aeson.defaultOptions
+
+instance Aeson.FromJSON CryptoError where
+    parseJSON = Aeson.genericParseJSON Aeson.defaultOptions
 
 instance Buildable InvalidRedemptionCode where
     build (InvalidRedemptionCodeInvalidBase64 txt) =
