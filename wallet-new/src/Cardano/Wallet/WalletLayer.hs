@@ -85,8 +85,8 @@ deriveGeneric ''CreateWalletError
 
 instance HasDiagnostic CreateWalletError where
     getDiagnosticKey = \case
-        CreateWalletError _ -> error "TODO"
-        CreateWalletFirstAccountCreationFailed _ -> error "TODO"
+        CreateWalletError _ -> "TODO"
+        CreateWalletFirstAccountCreationFailed _ -> "TODO"
 
 instance ToServantError CreateWalletError where
     declareServantError = \case
@@ -132,9 +132,9 @@ deriveGeneric ''GetWalletError
 
 instance HasDiagnostic GetWalletError where
     getDiagnosticKey = \case
-        GetWalletError _ -> error "TODO"
-        GetWalletErrorNotFound _ -> error "TODO"
-        GetWalletWalletIdDecodingFailed _ -> error "TODO"
+        GetWalletError _ -> "TODO"
+        GetWalletErrorNotFound _ -> "TODO"
+        GetWalletWalletIdDecodingFailed _ -> "TODO"
 
 instance ToServantError GetWalletError where
     declareServantError = \case
@@ -178,9 +178,9 @@ deriveGeneric ''UpdateWalletError
 
 instance HasDiagnostic UpdateWalletError where
     getDiagnosticKey = \case
-        UpdateWalletError _ -> error "TODO"
-        UpdateWalletErrorNotFound _ -> error "TODO"
-        UpdateWalletWalletIdDecodingFailed _ -> error "TODO"
+        UpdateWalletError _ -> "TODO"
+        UpdateWalletErrorNotFound _ -> "TODO"
+        UpdateWalletWalletIdDecodingFailed _ -> "TODO"
 
 instance ToServantError UpdateWalletError where
     declareServantError = \case
@@ -222,8 +222,8 @@ deriveGeneric ''UpdateWalletPasswordError
 
 instance HasDiagnostic UpdateWalletPasswordError where
     getDiagnosticKey = \case
-        UpdateWalletPasswordWalletIdDecodingFailed _ -> error "TODO"
-        UpdateWalletPasswordError _ -> error "TODO"
+        UpdateWalletPasswordWalletIdDecodingFailed _ -> "TODO"
+        UpdateWalletPasswordError _ -> "TODO"
 
 instance ToServantError UpdateWalletPasswordError where
     declareServantError = \case
@@ -261,8 +261,8 @@ deriveGeneric ''DeleteWalletError
 
 instance HasDiagnostic DeleteWalletError where
     getDiagnosticKey = \case
-        DeleteWalletWalletIdDecodingFailed _ -> error "TODO"
-        DeleteWalletError _ -> error "TODO"
+        DeleteWalletWalletIdDecodingFailed _ -> "TODO"
+        DeleteWalletError _ -> "TODO"
 
 instance ToServantError DeleteWalletError where
     declareServantError = \case
@@ -302,9 +302,9 @@ deriveGeneric ''GetUtxosError
 
 instance HasDiagnostic GetUtxosError where
     getDiagnosticKey = \case
-        GetUtxosWalletIdDecodingFailed _ -> error "TODO"
-        GetUtxosGetAccountsError _ -> error "TODO"
-        GetUtxosCurrentAvailableUtxoError _ -> error "TODO"
+        GetUtxosWalletIdDecodingFailed _ -> "TODO"
+        GetUtxosGetAccountsError _ -> "TODO"
+        GetUtxosCurrentAvailableUtxoError _ -> "TODO"
 
 instance ToServantError GetUtxosError where
     declareServantError = \case
@@ -348,8 +348,8 @@ deriveGeneric ''CreateAddressError
 
 instance HasDiagnostic CreateAddressError where
     getDiagnosticKey = \case
-        CreateAddressError _ -> error "TODO"
-        CreateAddressAddressDecodingFailed _ -> error "TODO"
+        CreateAddressError _ -> "TODO"
+        CreateAddressAddressDecodingFailed _ -> "TODO"
 
 instance ToServantError CreateAddressError where
     declareServantError = \case
@@ -396,7 +396,7 @@ deriveGeneric ''ValidateAddressError
 
 instance HasDiagnostic ValidateAddressError where
     getDiagnosticKey = \case
-        ValidateAddressDecodingFailed _ -> error "TODO"
+        ValidateAddressDecodingFailed _ -> "TODO"
 
 instance ToServantError ValidateAddressError where
     declareServantError = \case _ -> error "TODO"
@@ -438,9 +438,9 @@ deriveGeneric ''CreateAccountError
 
 instance HasDiagnostic CreateAccountError where
     getDiagnosticKey = \case
-        CreateAccountError _ -> error "TODO"
-        CreateAccountWalletIdDecodingFailed _ -> error "TODO"
-        CreateAccountFirstAddressGenerationFailed _ -> error "TODO"
+        CreateAccountError _ -> "TODO"
+        CreateAccountWalletIdDecodingFailed _ -> "TODO"
+        CreateAccountFirstAddressGenerationFailed _ -> "TODO"
 
 instance ToServantError CreateAccountError where
     declareServantError = \case
@@ -482,8 +482,8 @@ deriveGeneric ''GetAccountError
 
 instance HasDiagnostic GetAccountError where
     getDiagnosticKey = \case
-        GetAccountError _ -> error "TODO"
-        GetAccountWalletIdDecodingFailed _ -> error "TODO"
+        GetAccountError _ -> "TODO"
+        GetAccountWalletIdDecodingFailed _ -> "TODO"
 
 instance ToServantError GetAccountError where
     declareServantError = \case
@@ -647,10 +647,10 @@ deriveGeneric ''GetTxError
 
 instance HasDiagnostic GetTxError where
     getDiagnosticKey = \case
-        GetTxMissingWalletIdError -> error "TODO"
-        GetTxAddressDecodingFailed _ -> error "TODO"
-        GetTxInvalidSortingOperaration _ -> error "TODO"
-        GetTxUnknownHdAccount _ -> error "TODO"
+        GetTxMissingWalletIdError -> "TODO"
+        GetTxAddressDecodingFailed _ -> "TODO"
+        GetTxInvalidSortingOperaration _ -> "TODO"
+        GetTxUnknownHdAccount _ -> "TODO"
 
 instance ToServantError GetTxError where
     declareServantError = \case
@@ -712,10 +712,10 @@ deriveGeneric ''NewPaymentError
 
 instance HasDiagnostic NewPaymentError where
     getDiagnosticKey = \case
-        NewPaymentError _ -> error "TODO"
-        NewPaymentTimeLimitReached _ -> error "TODO"
-        NewPaymentWalletIdDecodingFailed _ -> error "TODO"
-        NewPaymentUnknownAccountId _ -> error "TODO"
+        NewPaymentError _ -> "TODO"
+        NewPaymentTimeLimitReached _ -> "TODO"
+        NewPaymentWalletIdDecodingFailed _ -> "TODO"
+        NewPaymentUnknownAccountId _ -> "TODO"
 
 instance ToServantError NewPaymentError where
     declareServantError = \case
@@ -759,9 +759,9 @@ deriveGeneric ''EstimateFeesError
 
 instance HasDiagnostic EstimateFeesError where
     getDiagnosticKey = \case
-        EstimateFeesError _ -> error "TODO"
-        EstimateFeesTimeLimitReached _ -> error "TODO"
-        EstimateFeesWalletIdDecodingFailed _ -> error "TODO"
+        EstimateFeesError _ -> "TODO"
+        EstimateFeesTimeLimitReached _ -> "TODO"
+        EstimateFeesWalletIdDecodingFailed _ -> "TODO"
 
 instance ToServantError EstimateFeesError where
     declareServantError = \case
@@ -807,7 +807,10 @@ data RedeemAdaError =
 deriveGeneric ''RedeemAdaError
 
 instance HasDiagnostic RedeemAdaError where
-    getDiagnosticKey = error "TODO"
+    getDiagnosticKey = \case
+        RedeemAdaError _ -> "TODO"
+        RedeemAdaWalletIdDecodingFailed _ -> "TODO"
+        RedeemAdaInvalidRedemptionCode _ -> "TODO"
 
 instance ToServantError RedeemAdaError where
     declareServantError = error "TODO"
