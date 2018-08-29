@@ -813,7 +813,7 @@ instance HasDiagnostic RedeemAdaError where
         RedeemAdaInvalidRedemptionCode _ -> "TODO"
 
 instance ToServantError RedeemAdaError where
-    declareServantError = err400 -- FIXME: Is this correct?
+    declareServantError _ = err400 -- FIXME: Is this correct?
 
 instance ToHttpErrorStatus RedeemAdaError
 
