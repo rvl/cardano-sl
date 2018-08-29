@@ -34,7 +34,6 @@ import qualified Prelude
 
 import           Control.Lens (to)
 import           Control.Monad.Except
-import           Crypto.Error (CryptoError (..))
 import           Data.Aeson as Aeson
 import           Data.ByteString.Base58 (bitcoinAlphabet, decodeBase58)
 import           Formatting (bprint, build, formatToString, sformat, shown, (%))
@@ -62,7 +61,7 @@ import           Cardano.Wallet.Kernel.Internal (WalletRestorationInfo,
 import qualified Cardano.Wallet.Kernel.Read as Kernel
 import           Cardano.Wallet.Kernel.Util (exceptT)
 
-import           Test.QuickCheck (Arbitrary (..), arbitrary, elements, oneof)
+import           Test.QuickCheck (Arbitrary (..), arbitrary, oneof)
 
 {-------------------------------------------------------------------------------
   From V1 to kernel types
@@ -118,7 +117,7 @@ fromRedemptionCodePaper (V1.ShieldedRedemptionCode pvSeed)
                         (V1.RedemptionMnemonic pvBackupPhrase) = do
     encBS <- exceptT $ maybe (Left $ InvalidRedemptionCodeInvalidBase58 pvSeed) Right $
                decodeBase58 bitcoinAlphabet $ encodeUtf8 pvSeed
-    decBS <- withExceptT InvalidRedemptionCodeCryptoError $ exceptT $
+    decBS <- withExceptT (InvalidRedemptionCodeCryptoError . show) $ exceptT $
                aesDecrypt encBS aesKey
     exceptT $ maybe (Left $ InvalidRedemptionCodeNot32Bytes pvSeed) (Right . snd) $
       redeemDeterministicKeyGen decBS
@@ -214,7 +213,7 @@ data InvalidRedemptionCode =
   | InvalidRedemptionCodeInvalidBase58 Text
 
     -- | AES decryption error (for paper wallets)
-  | InvalidRedemptionCodeCryptoError CryptoError
+  | InvalidRedemptionCodeCryptoError Text
 
     -- | Seed is not 32-bytes long (for either paper or non-paper wallets)
     --
@@ -227,15 +226,6 @@ instance Aeson.ToJSON InvalidRedemptionCode where
     toJSON = Aeson.genericToJSON Aeson.defaultOptions
 
 instance Aeson.FromJSON InvalidRedemptionCode where
-    parseJSON = Aeson.genericParseJSON Aeson.defaultOptions
-
---instance Generic CryptoError
-deriving instance Generic CryptoError
-
-instance Aeson.ToJSON CryptoError where
-    toJSON = Aeson.genericToJSON Aeson.defaultOptions
-
-instance Aeson.FromJSON CryptoError where
     parseJSON = Aeson.genericParseJSON Aeson.defaultOptions
 
 instance Buildable InvalidRedemptionCode where
@@ -253,9 +243,8 @@ instance Show InvalidRedemptionCode where
 
 instance Arbitrary InvalidRedemptionCode where
     arbitrary = oneof [ InvalidRedemptionCodeInvalidBase64 <$> arbitrary
-                      , InvalidRedemptionCodeCryptoError <$> cryptoError
+                      , InvalidRedemptionCodeCryptoError <$> arbitrary
                       ]
-      where cryptoError = (elements $ enumFrom (toEnum 0))
 
 -- | Calculate the 'SyncState' from data about the wallet's restoration.
 toSyncState :: Maybe WalletRestorationInfo -> V1.SyncState
