@@ -11,6 +11,7 @@ import           Universum
 import           Data.Aeson ((.:), (.=))
 import qualified Data.Aeson as A
 import           Data.Aeson.Types (typeMismatch)
+import           Data.Function (on)
 import           Data.List (lookup)
 import           Data.SafeCopy (base, deriveSafeCopySimple)
 import           Text.JSON.Canonical (FromJSON (..), JSValue (..),
@@ -29,6 +30,7 @@ import           Pos.Util.Util (toAesonError)
 data RequiresNetworkMagic
     = NMMustBeNothing
     | NMMustBeJust
+    | NMUndefined
     deriving (Show, Eq, Generic)
 
 -- TODO mhueschen : grok NFData
@@ -41,6 +43,7 @@ instance NFData RequiresNetworkMagic
 instance A.ToJSON RequiresNetworkMagic where
     toJSON NMMustBeNothing = A.String "NMMustBeNothing"
     toJSON NMMustBeJust    = A.String "NMMustBeJust"
+    toJSON NMUndefined     = A.Null
 
 instance A.FromJSON RequiresNetworkMagic where
     parseJSON = A.withText "requiresNetworkMagic" $ toAesonError . \case
@@ -53,6 +56,7 @@ instance A.FromJSON RequiresNetworkMagic where
 instance Monad m => ToJSON m RequiresNetworkMagic where
     toJSON NMMustBeNothing = pure (JSString "NMMustBeNothing")
     toJSON NMMustBeJust    = pure (JSString "NMMustBeJust")
+    toJSON NMUndefined     = pure JSNull
 
 instance ReportSchemaErrors m => FromJSON m RequiresNetworkMagic where
     fromJSON = \case
@@ -78,7 +82,13 @@ instance ReportSchemaErrors m => FromJSON m RequiresNetworkMagic where
 data ProtocolMagic = ProtocolMagic
     { getProtocolMagic        :: !Int32
     , getRequiresNetworkMagic :: !RequiresNetworkMagic
-    } deriving (Show, Eq, Generic)
+    } deriving (Show, Generic)
+
+-- Since ProtocolMagic is widely used and we want to maintain backwards
+-- compatibility of equality checks between the Int32 identifier, we only
+-- compare Eq on `getProtocolMagic`.
+instance Eq ProtocolMagic where
+    (==) = (==) `on` getProtocolMagic
 
 instance NFData ProtocolMagic
 

@@ -12,7 +12,7 @@ module Test.Pos.Chain.Block.BlockSpec
 
 import           Universum
 
-import           Serokell.Util (isVerSuccess)
+import           Serokell.Util (VerificationRes (..), isVerSuccess)
 import           Test.Hspec (Spec, describe, it, runIO)
 import           Test.Hspec.QuickCheck (modifyMaxSuccess, prop)
 import           Test.QuickCheck (Property, arbitrary, generate, (===), (==>))
@@ -38,6 +38,7 @@ import           Pos.Crypto (ProtocolMagic (..), ProxySecretKey (pskIssuerPk),
                      createPsk, proxySign, sign, toPublic)
 
 import           Test.Pos.Chain.Block.Arbitrary as BT
+import           Test.Pos.Crypto.Dummy (dummyProtocolMagic)
 
 -- This tests are quite slow, hence max success is at most 20.
 spec :: Spec
@@ -47,9 +48,9 @@ spec = do
 
 runWithMagic :: RequiresNetworkMagic -> Spec
 runWithMagic rnm = do
-    pm <- (\ident -> ProtocolMagic ident rnm) <$> runIO (generate arbitrary)
-    describe ("(requiresNetworkMagic=" ++ show rnm ++ ")") $ do
-        withGenesisSpec 0 defaultCoreConfiguration id $ \_ ->
+    let pm = dummyProtocolMagic
+    describe ("(requiresNetworkMagic=" ++ show rnm ++ ")") $
+        withGenesisSpec 0 (defaultCoreConfiguration pm) id $ \_ ->
             describe "Block properties" $ modifyMaxSuccess (min 20) $ do
                 describe "mkMainHeader" $ do
                     prop mainHeaderFormationDesc (mainHeaderFormation pm)
@@ -179,9 +180,9 @@ mainHeaderFormation pm prevHeader slotId signer body extra =
 -- GenesisBlock ∪ MainBlock
 ----------------------------------------------------------------------------
 
-validateGoodMainHeader :: ProtocolMagic -> BT.HeaderAndParams -> Bool
+validateGoodMainHeader :: ProtocolMagic -> BT.HeaderAndParams -> Property
 validateGoodMainHeader pm (BT.getHAndP -> (params, header)) =
-    isVerSuccess $ Block.verifyHeader pm params header
+    VerSuccess === Block.verifyHeader pm params header
 
 -- FIXME should sharpen this test to ensure that it fails with the expected
 -- reason.
@@ -193,6 +194,6 @@ validateBadProtocolMagicMainHeader pm (BT.getHAndP -> (params, header)) =
             BlockHeaderMain h    -> BlockHeaderMain    (h { _gbhProtocolMagic = protocolMagic' })
     in  not $ isVerSuccess $ Block.verifyHeader pm params header'
 
-validateGoodHeaderChain :: ProtocolMagic -> BT.BlockHeaderList -> Bool
+validateGoodHeaderChain :: ProtocolMagic -> BT.BlockHeaderList -> Property
 validateGoodHeaderChain pm (BT.BHL (l, _)) =
-    isVerSuccess $ Block.verifyHeaders pm Nothing (NewestFirst l)
+    VerSuccess === Block.verifyHeaders pm Nothing (NewestFirst l)

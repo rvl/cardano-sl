@@ -42,7 +42,7 @@ import           Pos.Core.Genesis (FakeAvvmOptions (..),
 import           Pos.Core.ProtocolConstants (VssMaxTTL (..), VssMinTTL (..))
 import           Pos.Core.Slotting (EpochIndex (..))
 import           Pos.Core.Update (BlockVersionData (..), SoftforkRule (..))
-import           Pos.Crypto (ProtocolMagic (..), RequiresNetworkMagic (..))
+import           Pos.Crypto (ProtocolMagic (..))
 import           Pos.Crypto.Hashing (Hash)
 
 data GenesisConfiguration
@@ -131,11 +131,11 @@ data CoreConfiguration = CoreConfiguration
 
 deriveJSON defaultOptions ''CoreConfiguration
 
-defaultCoreConfiguration :: CoreConfiguration
-defaultCoreConfiguration = CoreConfiguration (GCSpec defaultGenesisSpec)  0
+defaultCoreConfiguration :: ProtocolMagic -> CoreConfiguration
+defaultCoreConfiguration pm = CoreConfiguration (GCSpec (defaultGenesisSpec pm))  0
 
-defaultGenesisSpec :: GenesisSpec
-defaultGenesisSpec = UnsafeGenesisSpec
+defaultGenesisSpec :: ProtocolMagic -> GenesisSpec
+defaultGenesisSpec pm = UnsafeGenesisSpec
   (GenesisAvvmBalances HM.empty)
   (SharedSeed "c2tvdm9yb2RhIEdndXJkYSBib3JvZGEgcHJvdm9kYSA=")
   noGenesisDelegation
@@ -159,9 +159,7 @@ defaultGenesisSpec = UnsafeGenesisSpec
     (EpochIndex maxBound)
   )
   (GenesisProtocolConstants 10
-  -- TODO mhueschen : should this be threaded in?
-  -- we might want to test both cases. -------------\/
-                            (ProtocolMagic 55550001 NMMustBeJust)
+                            pm
                             (VssMaxTTL 6)
                             (VssMinTTL 2)
   )

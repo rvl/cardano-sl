@@ -32,7 +32,6 @@ module Pos.Chain.Block.Blockchain
        , gbConsensus
        ) where
 
-import qualified Prelude as P
 import           Universum
 
 import           Control.Lens (makeLenses)
@@ -41,7 +40,7 @@ import           Data.SafeCopy (SafeCopy (..), contain, safeGet, safePut)
 import           Formatting (build, sformat, (%))
 
 import           Pos.Binary.Class (Bi (..), encodeListLen, enforceSize)
-import           Pos.Crypto (ProtocolMagic (..))
+import           Pos.Crypto (ProtocolMagic (..), RequiresNetworkMagic (..))
 
 ----------------------------------------------------------------------------
 -- Blockchain class
@@ -141,9 +140,7 @@ instance ( Typeable b
         enforceSize "GenericBlockHeader b" 5
         _gbhProtocolMagic <-
             ProtocolMagic <$> decode
-                          <*> P.error "ProtocolMagic read from a block \
-                                      \has no `requiresNetworkMagic`"
-        -- TODO mhueschen : maybe this ^ can just have a default value, to avoid runtime errors
+                          <*> pure NMUndefined
         _gbhPrevBlock <- decode
         _gbhBodyProof <- decode
         _gbhConsensus <- decode
