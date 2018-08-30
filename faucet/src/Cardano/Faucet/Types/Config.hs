@@ -43,12 +43,11 @@ import           System.Metrics.Counter (Counter)
 import           System.Metrics.Gauge (Gauge)
 import           System.Remote.Monitoring.Statsd (StatsdOptions (..))
 
-import           Cardano.Wallet.API.V1.Types (AccountIndex, Payment,
-                     PaymentSource (..), V1, WalletId (..))
+import           Cardano.Wallet.API.V1.Types (AccountIndex, BackupPhrase (..),
+                     Payment, PaymentSource (..), V1, WalletId (..))
 import           Cardano.Wallet.Client (ClientError (..), WalletClient (..))
 import           Pos.Core (Address (..))
-import           Pos.Util.BackupPhrase (BackupPhrase (..))
-import           Pos.Util.Mnemonics (Mnemonic)
+import           Pos.Util.Mnemonic (Mnemonic)
 import           Test.QuickCheck (Arbitrary (..), choose)
 import           Test.QuickCheck.Arbitrary.Generic
 import           Universum
@@ -227,15 +226,6 @@ instance FromJSON CreatedWallet where
       <*> v .: "recovery-words"
       <*> v .: "account-index"
       <*> v .: "address"
-
--- Orphan instance just for release/1.3.1 branch -- remove when merging back
-instance ToJSON BackupPhrase where
-    toJSON (BackupPhrase wrds) = toJSON wrds
-
--- Orphan instance just for release/1.3.1 branch -- remove when merging back
-instance FromJSON BackupPhrase where
-    parseJSON (Array wrds) = BackupPhrase . toList <$> traverse parseJSON wrds
-    parseJSON x            = typeMismatch "parseJSON failed for BackupPhrase" x
 
 instance Arbitrary CreatedWallet where
     arbitrary = genericArbitrary

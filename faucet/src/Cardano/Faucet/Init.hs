@@ -50,19 +50,18 @@ import           System.Wlog (CanLog, HasLoggerName, LoggerNameBox (..),
                      liftLogIO, logDebug, logError, logInfo, withSublogger)
 
 import           Cardano.Wallet.API.V1.Types (Account (..), Address,
-                     AssuranceLevel (NormalAssurance), NewWallet (..),
-                     NodeInfo (..), Payment (..), PaymentDistribution (..),
-                     PaymentSource (..), SyncPercentage, V1 (..), Wallet (..),
-                     WalletAddress (..), WalletId,
-                     WalletOperation (CreateWallet), mkSyncPercentage,
-                     txAmount, unV1)
+                     AssuranceLevel (NormalAssurance), BackupPhrase (..),
+                     NewWallet (..), NodeInfo (..), Payment (..),
+                     PaymentDistribution (..), PaymentSource (..),
+                     SyncPercentage, V1 (..), Wallet (..), WalletAddress (..),
+                     WalletId, WalletOperation (CreateWallet),
+                     mkSyncPercentage, txAmount, unV1)
 import           Cardano.Wallet.Client (ClientError (..), WalletClient (..),
                      WalletResponse (..), liftClient)
 import           Cardano.Wallet.Client.Http (mkHttpClient)
 import           Crypto.Random.Entropy (getEntropy)
 import           Pos.Core (Coin (..))
-import           Pos.Util.BackupPhrase (BackupPhrase (..))
-import           Pos.Util.Mnemonics (toMnemonic)
+import           Pos.Util.Mnemonic (toMnemonic)
 import           Universum
 
 import           Cardano.Faucet.Types
