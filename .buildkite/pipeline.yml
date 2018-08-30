@@ -1,5 +1,7 @@
 steps:
   - label: '10 second test'
-    command: 'sleep 10'
+    command:
+      - 'sleep 10'
+      - 'echo :success:'
     agents:
       system: x86_64-linux
