@@ -14632,12 +14632,12 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-report-server";
-version = "0.4.10";
+version = "0.5.10";
 src = fetchgit {
 
 url = "https://github.com/input-output-hk/cardano-report-server.git";
-sha256 = "0chhbnrl68aqjfhkqvq53v572zsg52mj8pjxl3n7nnbc006cqs49";
-rev = "81eea7361a75923f9402fcb7840fb36722dbf88e";
+sha256 = "02n86wbfr3z2xqrc8g8naj0dc5j4644y0l295qzdqlfynmz6a82z";
+rev = "9b96874d0f234554a5779d98762cc0a6773a532a";
 
 };
 isLibrary = true;
@@ -14795,7 +14795,7 @@ license = stdenv.lib.licenses.bsd3;
 mkDerivation {
 
 pname = "cardano-sl";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../lib;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -15021,7 +15021,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-auxx";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../auxx;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -15170,7 +15170,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-binary";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../binary;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -15283,7 +15283,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-binary-test";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../binary/test;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -15388,9 +15388,15 @@ license = stdenv.lib.licenses.mit;
 }:
 mkDerivation {
 
+<<<<<<< HEAD
 pname = "cardano-sl-chain";
 version = "1.3.0";
 src = ./../chain;
+=======
+pname = "cardano-sl-block";
+version = "1.3.1";
+src = ./../block;
+>>>>>>> release/1.3.1
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
 "--ghc-option=-Wcompat"
@@ -15445,6 +15451,7 @@ unordered-containers
 libraryToolDepends = [
 cpphs
 ];
+<<<<<<< HEAD
 testHaskellDepends = [
 base
 bytestring
@@ -15471,6 +15478,37 @@ serokell-util
 universum
 unordered-containers
 vector
+=======
+doHaddock = false;
+description = "Cardano SL - block processing";
+license = stdenv.lib.licenses.mit;
+
+}) {};
+"cardano-sl-block-bench" = callPackage
+({
+  mkDerivation
+, base
+, bytestring
+, cardano-sl-binary
+, cardano-sl-block
+, cardano-sl-block-test
+, cardano-sl-core
+, cardano-sl-crypto
+, criterion
+, deepseq
+, formatting
+, stdenv
+, universum
+}:
+mkDerivation {
+
+pname = "cardano-sl-block-bench";
+version = "1.3.1";
+src = ./../block/bench;
+configureFlags = [
+"--ghc-option=-fwarn-redundant-constraints"
+"--ghc-option=-Werror"
+>>>>>>> release/1.3.1
 ];
 benchmarkHaskellDepends = [
 base
@@ -15523,9 +15561,15 @@ license = stdenv.lib.licenses.mit;
 }:
 mkDerivation {
 
+<<<<<<< HEAD
 pname = "cardano-sl-chain-test";
 version = "1.3.0";
 src = ./../chain/test;
+=======
+pname = "cardano-sl-block-test";
+version = "1.3.1";
+src = ./../block/test;
+>>>>>>> release/1.3.1
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
 "--ghc-option=-Wcompat"
@@ -15593,7 +15637,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-client";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../client;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -15730,7 +15774,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-core";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../core;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -15874,7 +15918,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-core-test";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../core/test;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -15960,7 +16004,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-crypto";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../crypto;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -16047,7 +16091,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-crypto-test";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../crypto/test;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -16128,7 +16172,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-db";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../db;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -16214,9 +16258,15 @@ license = stdenv.lib.licenses.mit;
 }:
 mkDerivation {
 
+<<<<<<< HEAD
 pname = "cardano-sl-db-test";
 version = "1.3.0";
 src = ./../db/test;
+=======
+pname = "cardano-sl-delegation";
+version = "1.3.1";
+src = ./../delegation;
+>>>>>>> release/1.3.1
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
 "--ghc-option=-Wcompat"
@@ -16231,7 +16281,76 @@ cardano-sl-core
 cardano-sl-core-test
 cardano-sl-crypto-test
 cardano-sl-db
+<<<<<<< HEAD
 cardano-sl-util-test
+=======
+cardano-sl-infra
+cardano-sl-lrc
+cardano-sl-networking
+cardano-sl-util
+conduit
+ether
+formatting
+generic-arbitrary
+lens
+log-warper
+lrucache
+mmorph
+mtl
+QuickCheck
+reflection
+resourcet
+rocksdb-haskell-ng
+safe-exceptions
+serokell-util
+text-format
+time
+time-units
+transformers
+universum
+unliftio
+unordered-containers
+];
+libraryToolDepends = [
+cpphs
+];
+doHaddock = false;
+description = "Cardano SL - delegation";
+license = stdenv.lib.licenses.mit;
+
+}) {};
+"cardano-sl-delegation-test" = callPackage
+({
+  mkDerivation
+, base
+, bytestring
+, cardano-sl-binary
+, cardano-sl-core
+, cardano-sl-core-test
+, cardano-sl-crypto
+, cardano-sl-crypto-test
+, cardano-sl-delegation
+, generic-arbitrary
+, QuickCheck
+, stdenv
+, universum
+, unordered-containers
+}:
+mkDerivation {
+
+pname = "cardano-sl-delegation-test";
+version = "1.3.1";
+src = ./../delegation/test;
+libraryHaskellDepends = [
+base
+bytestring
+cardano-sl-binary
+cardano-sl-core
+cardano-sl-core-test
+cardano-sl-crypto
+cardano-sl-crypto-test
+cardano-sl-delegation
+>>>>>>> release/1.3.1
 generic-arbitrary
 QuickCheck
 universum
@@ -16315,7 +16434,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-explorer";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../explorer;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -16446,6 +16565,176 @@ description = "Cardano explorer";
 license = stdenv.lib.licenses.mit;
 
 }) {};
+"cardano-sl-faucet" = callPackage
+({
+  mkDerivation
+, aeson
+, aeson-pretty
+, base
+, base16-bytestring
+, bytestring
+, cardano-sl-core
+, cardano-sl-crypto
+, cardano-sl-infra
+, cardano-sl-update
+, cardano-sl-util
+, cardano-sl-wallet
+, cardano-sl-wallet-new
+, connection
+, cryptonite
+, data-default
+, directory
+, ekg
+, ekg-core
+, ekg-statsd
+, exceptions
+, filepath
+, generic-arbitrary
+, hspec
+, http-api-data
+, http-client
+, http-client-tls
+, http-types
+, lens
+, log-warper
+, memory
+, mmorph
+, mtl
+, neat-interpolation
+, optparse-applicative
+, QuickCheck
+, random
+, safe-exceptions
+, serokell-util
+, servant
+, servant-client
+, servant-client-core
+, servant-server
+, servant-swagger
+, servant-swagger-ui
+, stdenv
+, stm
+, swagger2
+, tagged
+, text
+, text-format
+, time
+, tls
+, universum
+, wai
+, wai-app-static
+, wai-cors
+, wai-extra
+, warp
+, wreq
+}:
+mkDerivation {
+
+pname = "cardano-sl-faucet";
+version = "0.1.0.0";
+src = ./../faucet;
+isLibrary = true;
+isExecutable = true;
+libraryHaskellDepends = [
+aeson
+aeson-pretty
+base
+base16-bytestring
+bytestring
+cardano-sl-core
+cardano-sl-crypto
+cardano-sl-update
+cardano-sl-util
+cardano-sl-wallet
+cardano-sl-wallet-new
+connection
+cryptonite
+data-default
+directory
+ekg-core
+ekg-statsd
+exceptions
+filepath
+generic-arbitrary
+http-api-data
+http-client
+http-client-tls
+http-types
+lens
+log-warper
+memory
+mmorph
+mtl
+neat-interpolation
+QuickCheck
+random
+safe-exceptions
+serokell-util
+servant
+servant-client
+servant-client-core
+servant-server
+servant-swagger
+servant-swagger-ui
+stm
+swagger2
+tagged
+text
+text-format
+time
+tls
+universum
+wai
+wai-app-static
+wreq
+];
+executableHaskellDepends = [
+aeson
+base
+bytestring
+cardano-sl-core
+cardano-sl-infra
+cardano-sl-update
+cardano-sl-util
+cardano-sl-wallet
+cardano-sl-wallet-new
+ekg
+ekg-core
+ekg-statsd
+exceptions
+lens
+log-warper
+mmorph
+mtl
+optparse-applicative
+safe-exceptions
+servant
+servant-client
+servant-server
+text
+universum
+wai
+wai-cors
+wai-extra
+warp
+];
+testHaskellDepends = [
+aeson
+base
+bytestring
+cardano-sl-core
+cardano-sl-wallet
+cardano-sl-wallet-new
+hspec
+mtl
+QuickCheck
+time
+universum
+];
+doHaddock = false;
+license = stdenv.lib.licenses.mit;
+
+}) {};
 "cardano-sl-generator" = callPackage
 ({
   mkDerivation
@@ -16501,7 +16790,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-generator";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../generator;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -16720,7 +17009,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-infra";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../infra;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -16787,6 +17076,42 @@ testHaskellDepends = [
 aeson
 async
 base
+<<<<<<< HEAD
+=======
+containers
+hspec
+QuickCheck
+];
+doHaddock = false;
+description = "Cardano SL - infrastructural";
+license = stdenv.lib.licenses.mit;
+
+}) {};
+"cardano-sl-infra-test" = callPackage
+({
+  mkDerivation
+, base
+, bytestring
+, cardano-sl-core
+, cardano-sl-core-test
+, cardano-sl-crypto
+, cardano-sl-infra
+, cardano-sl-util-test
+, containers
+, hedgehog
+, kademlia
+, memory
+, stdenv
+, universum
+}:
+mkDerivation {
+
+pname = "cardano-sl-infra-test";
+version = "1.3.1";
+src = ./../infra/test;
+libraryHaskellDepends = [
+base
+>>>>>>> release/1.3.1
 bytestring
 cardano-sl-binary
 cardano-sl-binary-test
@@ -16846,9 +17171,19 @@ license = stdenv.lib.licenses.mit;
 }:
 mkDerivation {
 
+<<<<<<< HEAD
 pname = "cardano-sl-infra-test";
 version = "1.3.0";
 src = ./../infra/test;
+=======
+pname = "cardano-sl-lrc";
+version = "1.3.1";
+src = ./../lrc;
+configureFlags = [
+"--ghc-option=-fwarn-redundant-constraints"
+"--ghc-option=-Werror"
+];
+>>>>>>> release/1.3.1
 libraryHaskellDepends = [
 aeson
 async
@@ -16866,7 +17201,48 @@ cardano-sl-infra
 cardano-sl-networking
 cardano-sl-util-test
 containers
+<<<<<<< HEAD
 dns
+=======
+hspec
+QuickCheck
+universum
+];
+doHaddock = false;
+description = "Cardano SL - Leaders and Richmen computation";
+license = stdenv.lib.licenses.mit;
+
+}) {};
+"cardano-sl-lrc-test" = callPackage
+({
+  mkDerivation
+, base
+, cardano-sl-core
+, cardano-sl-core-test
+, cardano-sl-lrc
+, cpphs
+, generic-arbitrary
+, QuickCheck
+, reflection
+, stdenv
+, universum
+, unordered-containers
+}:
+mkDerivation {
+
+pname = "cardano-sl-lrc-test";
+version = "1.3.1";
+src = ./../lrc/test;
+configureFlags = [
+"--ghc-option=-fwarn-redundant-constraints"
+"--ghc-option=-Werror"
+];
+libraryHaskellDepends = [
+base
+cardano-sl-core
+cardano-sl-core-test
+cardano-sl-lrc
+>>>>>>> release/1.3.1
 generic-arbitrary
 hedgehog
 hspec
@@ -16932,7 +17308,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-networking";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../networking;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -17043,7 +17419,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-node";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../node;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -17087,9 +17463,15 @@ license = stdenv.lib.licenses.mit;
 }:
 mkDerivation {
 
+<<<<<<< HEAD
 pname = "cardano-sl-node-ipc";
 version = "1.3.0";
 src = ./../node-ipc;
+=======
+pname = "cardano-sl-ssc";
+version = "1.3.1";
+src = ./../ssc;
+>>>>>>> release/1.3.1
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
 "--ghc-option=-Wcompat"
@@ -17190,7 +17572,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-tools";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../tools;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -17318,6 +17700,317 @@ description = "Cardano SL - Tools";
 license = stdenv.lib.licenses.mit;
 
 }) {};
+<<<<<<< HEAD
+=======
+"cardano-sl-txp" = callPackage
+({
+  mkDerivation
+, aeson
+, base
+, bytestring
+, cardano-sl-binary
+, cardano-sl-core
+, cardano-sl-core-test
+, cardano-sl-crypto
+, cardano-sl-crypto-test
+, cardano-sl-db
+, cardano-sl-infra
+, cardano-sl-networking
+, cardano-sl-util
+, cardano-sl-util-test
+, conduit
+, containers
+, cpphs
+, data-default
+, ekg-core
+, ether
+, exceptions
+, fmt
+, formatting
+, free
+, generic-arbitrary
+, hashable
+, hspec
+, lens
+, log-warper
+, memory
+, mmorph
+, mtl
+, neat-interpolation
+, plutus-prototype
+, QuickCheck
+, reflection
+, resourcet
+, rocksdb-haskell-ng
+, safe-exceptions
+, serokell-util
+, stdenv
+, stm
+, tagged
+, template-haskell
+, text
+, text-format
+, transformers
+, universum
+, unliftio
+, unordered-containers
+, vector
+}:
+mkDerivation {
+
+pname = "cardano-sl-txp";
+version = "1.3.1";
+src = ./../txp;
+configureFlags = [
+"--ghc-option=-fwarn-redundant-constraints"
+"--ghc-option=-Werror"
+];
+libraryHaskellDepends = [
+aeson
+base
+bytestring
+cardano-sl-binary
+cardano-sl-core
+cardano-sl-core-test
+cardano-sl-crypto
+cardano-sl-crypto-test
+cardano-sl-db
+cardano-sl-infra
+cardano-sl-networking
+cardano-sl-util
+cardano-sl-util-test
+conduit
+containers
+data-default
+ekg-core
+ether
+exceptions
+fmt
+formatting
+free
+generic-arbitrary
+hashable
+lens
+log-warper
+memory
+mmorph
+mtl
+neat-interpolation
+plutus-prototype
+reflection
+resourcet
+rocksdb-haskell-ng
+safe-exceptions
+serokell-util
+stm
+tagged
+template-haskell
+text
+text-format
+transformers
+universum
+unliftio
+unordered-containers
+vector
+];
+libraryToolDepends = [
+cpphs
+];
+testHaskellDepends = [
+base
+cardano-sl-binary
+cardano-sl-core
+cardano-sl-core-test
+cardano-sl-crypto
+cardano-sl-crypto-test
+cardano-sl-util
+cardano-sl-util-test
+containers
+data-default
+fmt
+generic-arbitrary
+hspec
+lens
+mtl
+QuickCheck
+serokell-util
+text-format
+universum
+unordered-containers
+vector
+];
+doHaddock = false;
+description = "Cardano SL - transaction processing";
+license = stdenv.lib.licenses.mit;
+
+}) {};
+"cardano-sl-txp-test" = callPackage
+({
+  mkDerivation
+, base
+, cardano-sl-binary
+, cardano-sl-core
+, cardano-sl-core-test
+, cardano-sl-crypto
+, cardano-sl-crypto-test
+, cardano-sl-infra
+, cardano-sl-txp
+, cardano-sl-util-test
+, data-default
+, generic-arbitrary
+, QuickCheck
+, stdenv
+, universum
+, vector
+}:
+mkDerivation {
+
+pname = "cardano-sl-txp-test";
+version = "1.3.1";
+src = ./../txp/test;
+configureFlags = [
+"--ghc-option=-fwarn-redundant-constraints"
+"--ghc-option=-Werror"
+];
+libraryHaskellDepends = [
+base
+cardano-sl-binary
+cardano-sl-core
+cardano-sl-core-test
+cardano-sl-crypto
+cardano-sl-crypto-test
+cardano-sl-infra
+cardano-sl-txp
+cardano-sl-util-test
+data-default
+generic-arbitrary
+QuickCheck
+universum
+vector
+];
+doHaddock = false;
+description = "Cardano SL - arbitrary instances for cardano-sl-txp";
+license = stdenv.lib.licenses.mit;
+
+}) {};
+"cardano-sl-update" = callPackage
+({
+  mkDerivation
+, aeson
+, base
+, bytestring
+, Cabal
+, cardano-sl-binary
+, cardano-sl-core
+, cardano-sl-core-test
+, cardano-sl-crypto
+, cardano-sl-crypto-test
+, cardano-sl-db
+, cardano-sl-infra
+, cardano-sl-lrc
+, cardano-sl-networking
+, cardano-sl-util
+, cardano-sl-util-test
+, conduit
+, containers
+, cpphs
+, data-default
+, directory
+, ether
+, exceptions
+, formatting
+, generic-arbitrary
+, hashable
+, http-client
+, http-client-tls
+, http-conduit
+, lens
+, log-warper
+, memory
+, mtl
+, QuickCheck
+, reflection
+, resourcet
+, rocksdb-haskell-ng
+, safe-exceptions
+, serokell-util
+, stdenv
+, stm
+, tagged
+, template-haskell
+, text-format
+, time-units
+, transformers
+, universum
+, unliftio
+, unordered-containers
+}:
+mkDerivation {
+
+pname = "cardano-sl-update";
+version = "1.3.1";
+src = ./../update;
+configureFlags = [
+"--ghc-option=-fwarn-redundant-constraints"
+"--ghc-option=-Werror"
+];
+libraryHaskellDepends = [
+aeson
+base
+bytestring
+Cabal
+cardano-sl-binary
+cardano-sl-core
+cardano-sl-core-test
+cardano-sl-crypto
+cardano-sl-crypto-test
+cardano-sl-db
+cardano-sl-infra
+cardano-sl-lrc
+cardano-sl-networking
+cardano-sl-util
+cardano-sl-util-test
+conduit
+containers
+data-default
+directory
+ether
+exceptions
+formatting
+generic-arbitrary
+hashable
+http-client
+http-client-tls
+http-conduit
+lens
+log-warper
+memory
+mtl
+QuickCheck
+reflection
+resourcet
+rocksdb-haskell-ng
+safe-exceptions
+serokell-util
+stm
+tagged
+template-haskell
+text-format
+time-units
+transformers
+universum
+unliftio
+unordered-containers
+];
+libraryToolDepends = [
+cpphs
+];
+doHaddock = false;
+description = "Cardano SL - update";
+license = stdenv.lib.licenses.mit;
+
+}) {};
+>>>>>>> release/1.3.1
 "cardano-sl-util" = callPackage
 ({
   mkDerivation
@@ -17376,7 +18069,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-util";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../util;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -17493,7 +18186,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-util-test";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../util/test;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -17611,7 +18304,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-wallet";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../wallet;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"
@@ -17845,7 +18538,7 @@ license = stdenv.lib.licenses.mit;
 mkDerivation {
 
 pname = "cardano-sl-wallet-new";
-version = "1.3.0";
+version = "1.3.1";
 src = ./../wallet-new;
 configureFlags = [
 "--ghc-option=-fwarn-redundant-constraints"

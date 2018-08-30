@@ -26,6 +26,33 @@ let
     inherit src;
   };
 
+<<<<<<< HEAD
+=======
+  generatedSrc = pkgs.runCommand "cardano-sl-explorer-frontend-src" {
+    inherit src bowerComponents;
+    buildInputs = [ regen-script ];
+  } ''
+    cp -R --reflink=auto $src $out
+    chmod -R u+w $out
+    cd $out
+    rm -rf .psci_modules .pulp-cache bower_components output result
+
+    # Purescript code generation
+    regen
+
+    # Frontend dependencies
+    ln -s $bowerComponents/bower_components .
+
+    # Patch the build recipe for nix
+    echo "patching webpack.config.babel.js"
+    sed -e "s/COMMIT_HASH.*/COMMIT_HASH': '\"${gitrev}\"',/" \
+        -e "s/import GitRevisionPlugin.*//" \
+        -e "s/path:.*/path: process.env.out,/" \
+        -e "/new ProgressPlugin/d" \
+        -i webpack.config.babel.js
+  '';
+
+>>>>>>> release/1.3.1
   # p-d-l does not build with our main version of nixpkgs.
   # Needs to use something off 17.03 branch.
   oldHaskellPackages = (import (pkgs.fetchzip {
@@ -55,16 +82,22 @@ let
   frontend = { stdenv, python, purescript, mkYarnPackage }:
     mkYarnPackage {
       name = "cardano-explorer-frontend";
+<<<<<<< HEAD
       inherit src;
       yarnLock = ./yarn.lock;
       packageJSON = ./package.json;
       extraBuildInputs = [
         oldHaskellPackages.purescript-derive-lenses
         cardano-sl-explorer
+=======
+      src = generatedSrc;
+      extraBuildInputs = [
+>>>>>>> release/1.3.1
         purescript
         regen-script
       ];
       passthru = { inherit bowerComponents; };
+<<<<<<< HEAD
       postConfigure = ''
         rm -rf .psci_modules .pulp-cache bower_components output result
 
@@ -82,6 +115,8 @@ let
             -e "/new ProgressPlugin/d" \
             -i webpack.config.babel.js
       '';
+=======
+>>>>>>> release/1.3.1
       installPhase = ''
         # run the build:prod script
         export PATH=$(pwd)/node_modules/.bin:$PATH
