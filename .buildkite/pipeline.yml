@@ -5,3 +5,8 @@ steps:
       - 'echo :success:'
     agents:
       system: x86_64-linux
+
+  - label: 'more testing'
+    command: 'nix-shell -p cowsay --run "cowsay bors-ng"'
+    agents:
+      system: x86_64-linux
