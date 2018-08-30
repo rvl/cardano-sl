@@ -5,3 +5,8 @@ steps:
       - 'echo :success:'
     agents:
       system: x86_64-linux
+
+  - label: 'hello'
+    command: 'nix-shell -p cowsay --run "cowsay hello"'
+    agents:
+      system: x86_64-linux
