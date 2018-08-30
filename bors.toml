@@ -1,5 +1,5 @@
 status = [
-  "buildkite/rvl_test",
+  "buildkite/rvl-test",
 #  "continuous-integration/appveyor/branch",
 #  "ci/hydra:serokell:cardano-sl:all-cardano-sl.x86_64-linux"
 ]
