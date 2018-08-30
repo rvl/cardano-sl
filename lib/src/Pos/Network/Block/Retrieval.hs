@@ -11,15 +11,15 @@ import           Universum
 
 import           Control.Concurrent.STM (putTMVar, swapTMVar, tryReadTBQueue,
                      tryReadTMVar, tryTakeTMVar)
-import           Control.Exception.Safe (handleAny)
+import           Control.Exception.Safe (IOException, handleAny)
 import           Control.Lens (to)
 import           Control.Monad.STM (retry)
 import qualified Data.List.NonEmpty as NE
 import           Data.Time.Units (Second)
-import           Formatting (build, int, sformat, (%))
+import           Formatting (build, int, sformat, shown, (%))
 
 import           Pos.Chain.Block (Block, BlockHeader, HasHeaderHash (..),
-                     HeaderHash)
+                     HeaderHash, headerHashF)
 import           Pos.Chain.Txp (TxpConfiguration)
 import           Pos.Core as Core (Config, configBlkSecurityParam, difficultyL,
                      isMoreDifficult)
@@ -157,7 +157,7 @@ retrievalWorker coreConfig txpConfig diffusion = do
         -- REPORT:ERROR 'reportOrLogW' in block retrieval worker/recovery.
         reportOrLogW (sformat errfmt nodeId (headerHash rHeader)) e
             `catch` handleIOException
-        dropRecoveryHeaderAndRepeat pm diffusion nodeId
+        dropRecoveryHeaderAndRepeat coreConfig diffusion nodeId
         where
             errfmt = "handleRecoveryE: error handling nodeId="%build%", header="%headerHashF%": "
 

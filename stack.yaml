@@ -59,11 +59,6 @@ packages:
     git: https://github.com/input-output-hk/cardano-crypto
     commit: e87fcd3fea18f664d6e4f39c11abb8cafbd25785
   extra-dep: true
-# to be removed when haskell-ip is in the current stackage version
-- location:
-    git: https://github.com/andrewthad/haskell-ip
-    commit: 9bb453139aa82cc973125091800422a523e1eb8f
-  extra-dep: true
 
 ## Vendored/Forked dependencies
 #
@@ -102,22 +97,8 @@ packages:
 # https://github.com/haskell-distributed/network-transport/compare/master...serokell:018a50b9042c2115c3ec9c9fd5ca5f28737dd29c?expand=1
 # Seems relatively straightforward to PR.
 - location:
-<<<<<<< HEAD
     git: https://github.com/serokell/network-transport
     commit: 018a50b9042c2115c3ec9c9fd5ca5f28737dd29c
-=======
-    git: https://github.com/avieth/plutus-prototype
-    commit: d094be301195fcd8ab864d793f114970426a4478
-  extra-dep: true
-- location:
-    git: https://github.com/thoughtpolice/hs-ed25519
-    # We're waiting on next release
-    commit: da4247b5b3420120e20451e6a252e2a2ca15b43c
-  extra-dep: true
-- location:
-    git: https://github.com/input-output-hk/cardano-report-server.git
-    commit: 9b96874d0f234554a5779d98762cc0a6773a532a
->>>>>>> release/1.3.1
   extra-dep: true
 
 # This doesn't have much difference at all with the upstream master:
