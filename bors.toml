@@ -1,0 +1,8 @@
+status = [
+  "buildkite/rvl_test",
+#  "continuous-integration/appveyor/branch",
+#  "ci/hydra:serokell:cardano-sl:all-cardano-sl.x86_64-linux"
+]
+# Uncomment this to use a two hour timeout.
+# The default is one hour.
+#timeout_sec = 7200
