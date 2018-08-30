@@ -22,21 +22,10 @@
 with localLib;
 
 let
-<<<<<<< HEAD
   stackExec = optionalString useStackBinaries "stack exec -- ";
   cardanoDeps = with iohkPkgs; [ cardano-sl-tools cardano-sl-wallet-new cardano-sl-node-static ];
   demoClusterDeps = with pkgs; [ jq coreutils curl gnused openssl ];
   allDeps =  demoClusterDeps ++ (optionals (!useStackBinaries ) cardanoDeps);
-=======
-  executables =  {
-    corenode = "${iohkPkgs.cardano-sl-node-static}/bin/cardano-node-simple";
-    wallet = "${iohkPkgs.cardano-sl-wallet-new-static}/bin/cardano-node";
-    integration-test = "${iohkPkgs.cardano-sl-wallet-new}/bin/wal-integr-test";
-    keygen = "${iohkPkgs.cardano-sl-tools}/bin/cardano-keygen";
-    explorer = "${iohkPkgs.cardano-sl-explorer-static}/bin/cardano-explorer";
-  };
-  demoClusterDeps = with pkgs; (with iohkPkgs; [ jq coreutils pkgs.curl gnused openssl cardano-sl-tools cardano-sl-wallet-new cardano-sl-node-static ]);
->>>>>>> release/1.3.1
   walletConfig = {
     inherit stateDir disableClientAuth;
     topologyFile = walletTopologyFile;

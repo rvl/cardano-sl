@@ -61,6 +61,7 @@ let
     cardano-sl-wallet-new = justStaticExecutablesGitRev super.cardano-sl-wallet-new;
     cardano-sl-node-static = justStaticExecutablesGitRev self.cardano-sl-node;
     cardano-sl-explorer-static = justStaticExecutablesGitRev self.cardano-sl-explorer;
+    cardano-sl-faucet-static = justStaticExecutablesGitRev self.cardano-sl-faucet;
     cardano-report-server-static = justStaticExecutablesGitRev self.cardano-report-server;
     cardano-sl-tools = justStaticExecutablesGitRev (overrideCabal super.cardano-sl-tools (drv: {
       # waiting on load-command size fix in dyld
@@ -72,49 +73,6 @@ let
     x509-system = overrideDerivation super.x509-system (drv: {
       postPatch = ":";
     });
-<<<<<<< HEAD
-=======
-    overrides = self: super: {
-      srcroot = ./.;
-      cardano-sl-core = overrideCabal super.cardano-sl-core (drv: {
-        configureFlags = (drv.configureFlags or []) ++ [
-          "-f-asserts"
-        ];
-      });
-
-      cardano-sl = overrideCabal (buildWithBenchmarks super.cardano-sl) (drv: {
-        # production full nodes shouldn't use wallet as it means different constants
-        configureFlags = (drv.configureFlags or []) ++ [
-          "-f-asserts"
-        ];
-        # waiting on load-command size fix in dyld
-        doCheck = ! pkgs.stdenv.isDarwin;
-        passthru = {
-          inherit enableProfiling;
-        };
-      });
-
-      cardano-sl-networking = buildWithBenchmarks super.cardano-sl-networking;
-      cardano-sl-block-bench = buildWithBenchmarks super.cardano-sl-block-bench;
-      cardano-sl-explorer = buildWithBenchmarks super.cardano-sl-explorer;
-      cardano-sl-wallet-static = justStaticExecutables super.cardano-sl-wallet;
-      cardano-sl-client = addRealTimeTestLogs super.cardano-sl-client;
-      cardano-sl-generator = addRealTimeTestLogs super.cardano-sl-generator;
-      # cardano-sl-auxx = addGitRev (justStaticExecutables super.cardano-sl-auxx);
-      cardano-sl-auxx = addGitRev (justStaticExecutables super.cardano-sl-auxx);
-      cardano-sl-node = addGitRev super.cardano-sl-node;
-      cardano-sl-wallet-new = addGitRev super.cardano-sl-wallet-new;
-      cardano-sl-wallet-new-static = addGitRev (justStaticExecutables (buildWithBenchmarks super.cardano-sl-wallet-new));
-      cardano-sl-tools = addGitRev (justStaticExecutables (overrideCabal super.cardano-sl-tools (drv: {
-        # waiting on load-command size fix in dyld
-        doCheck = ! pkgs.stdenv.isDarwin;
-      })));
-
-      cardano-sl-node-static = justStaticExecutables self.cardano-sl-node;
-      cardano-sl-explorer-static = addGitRev (justStaticExecutables self.cardano-sl-explorer);
-      cardano-report-server-static = justStaticExecutables self.cardano-report-server;
-      cardano-sl-faucet-static = addGitRev (justStaticExecutables self.cardano-sl-faucet);
->>>>>>> release/1.3.1
 
     # TODO: get rid of pthreads option once cryptonite 0.25 is released
     # DEVOPS-393: https://github.com/haskell-crypto/cryptonite/issues/193
@@ -209,16 +167,13 @@ let
       inherit system config gitrev pkgs;
       cardano-sl-explorer = cardanoPkgs.cardano-sl-explorer-static;
     });
-<<<<<<< HEAD
     all-cardano-sl = pkgs.buildEnv {
       name = "all-cardano-sl";
       paths = attrValues (filterAttrs (name: drv: localLib.isCardanoSL name) cardanoPkgs);
       ignoreCollisions = true;
     };
-=======
     makeFaucetFrontend = pkgs.callPackage ./faucet/frontend;
 
->>>>>>> release/1.3.1
     mkDocker = { environment, connectArgs ? {} }: import ./docker.nix { inherit environment connect gitrev pkgs connectArgs; };
     stack2nix = import (pkgs.fetchFromGitHub {
       owner = "avieth";
