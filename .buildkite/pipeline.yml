@@ -10,3 +10,8 @@ steps:
     command: 'nix-shell -p cowsay --run "cowsay hello"'
     agents:
       system: x86_64-linux
+ 
+  - label: 'bomb'
+    command: "false"
+    agents:
+      system: x86_64-linux
