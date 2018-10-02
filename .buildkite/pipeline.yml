@@ -1,5 +1,7 @@
 steps:
   - label: 'hello'
-    command: 'nix-shell -p cowsay --run "cowsay this is pr #11"'
+    command:
+      - 'nix-shell -p cowsay --run "cowsay this is slower"'
+      - "sleep 120"
     agents:
       system: x86_64-linux
