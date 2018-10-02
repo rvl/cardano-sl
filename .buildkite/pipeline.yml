@@ -1,8 +1,8 @@
 steps:
   - label: 'hello'
     command:
-      - 'nix-shell -p cowsay --run "cowsay this is slower"'
-      - "sleep 120"
+      - 'nix-shell -p cowsay --run "cowsay a little bit better"'
+      - "sleep 60"
     agents:
       system: x86_64-linux
   - label: 'think'
