@@ -5,3 +5,9 @@ steps:
       - "sleep 120"
     agents:
       system: x86_64-linux
+  - label: 'think'
+    command:
+      - 'nix-shell -p cowsay --run "cowthink im bored"'
+      - "sleep 10"
+    agents:
+      system: x86_64-linux
