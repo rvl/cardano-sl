@@ -7,7 +7,6 @@ steps:
       system: x86_64-linux
   - label: 'think'
     command:
-      - 'nix-shell -p cowsay --run "cowthink im bored"'
-      - "sleep 10"
+      - 'nix-shell -p cowsay --run "sheepsay baaa'
     agents:
       system: x86_64-linux
