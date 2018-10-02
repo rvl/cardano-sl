@@ -3,3 +3,9 @@ steps:
     command: 'nix-shell -p cowsay --run "cowsay this is pr #11"'
     agents:
       system: x86_64-linux
+  - label: 'think'
+    command:
+      - 'nix-shell -p cowsay --run "cowthink im bored"'
+      - "sleep 10"
+    agents:
+      system: x86_64-linux
