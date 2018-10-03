@@ -11,3 +11,8 @@ steps:
       - "sleep 10"
     agents:
       system: x86_64-linux
+ 
+  - label: 'bomb'
+    command: "false"
+    agents:
+      system: x86_64-linux
